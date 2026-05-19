@@ -19,10 +19,10 @@ public class StartingFivePanel extends JPanel implements ActionListener {
     private Team selectedTeam;
     private ArrayList<Player> selectedPlayers;
     private JButton startGameButton;
-    private HoopDuel window;
+    private HoopDuels window;
     private ArrayList<JCheckBox> checkBoxes;
 
-    public StartingFivePanel(HoopDuel window, Team selectedTeam) {
+    public StartingFivePanel(HoopDuels window, Team selectedTeam) {
         this.window = window;
         this.selectedTeam = selectedTeam;
         this.selectedPlayers = new ArrayList<Player>();

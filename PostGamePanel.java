@@ -19,9 +19,9 @@ public class PostGamePanel extends JPanel implements ActionListener {
     private Team aiTeam;
     private JButton restartButton;
     private JButton exitButton;
-    private HoopDuel window;
+    private HoopDuels window;
 
-    public PostGamePanel(HoopDuel window, Team userTeam, Team aiTeam) {
+    public PostGamePanel(HoopDuels window, Team userTeam, Team aiTeam) {
         this.window = window;
         this.userTeam = userTeam;
         this.aiTeam = aiTeam;

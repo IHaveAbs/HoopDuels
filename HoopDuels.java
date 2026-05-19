@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
  * Main application class for HoopDuel.
  * Creates the window and switches between screens.
  */
-public class HoopDuel {
+public class HoopDuels {
     private JFrame frame;
     private JPanel cards;
     private CardLayout cardLayout;
@@ -15,7 +15,7 @@ public class HoopDuel {
     private Team userTeam;
     private Team aiTeam;
 
-    public HoopDuel() {
+    public HoopDuels() {
         frame = new JFrame("HoopDuel");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1100, 720);
@@ -87,7 +87,7 @@ public class HoopDuel {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new HoopDuel();
+                new HoopDuels();
             }
         });
     }

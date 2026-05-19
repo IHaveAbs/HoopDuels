@@ -16,10 +16,10 @@ import javax.swing.JPanel;
 public class MenuPanel extends JPanel implements ActionListener {
     private JButton startButton;
     private JButton tutorialButton;
-    private HoopDuel window;
+    private HoopDuels window;
     private String userName;
 
-    public MenuPanel(HoopDuel window, String userName) {
+    public MenuPanel(HoopDuels window, String userName) {
         this.window = window;
         this.userName = userName;
         setLayout(new BorderLayout());

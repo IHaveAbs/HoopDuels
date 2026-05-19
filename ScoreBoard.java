@@ -6,13 +6,13 @@ import java.awt.Graphics;
  * Draws the scoreboard. It reads scores directly from Team objects and does not
  * store its own duplicate scores.
  */
-public class Scoreboard implements Drawable {
+public class ScoreBoard implements Drawable {
     private int possessionNumber;
     private int timeLeft;
     private Team userTeam;
     private Team aiTeam;
 
-    public Scoreboard(Team userTeam, Team aiTeam, int timeLeft) {
+    public ScoreBoard(Team userTeam, Team aiTeam, int timeLeft) {
         this.userTeam = userTeam;
         this.aiTeam = aiTeam;
         this.timeLeft = timeLeft;

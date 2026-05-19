@@ -27,12 +27,12 @@ public class GamePanel extends JPanel implements ActionListener {
     private static final int FRAME_DELAY = 16;
     private static final int RESULT_PAUSE_FRAMES = 70;
 
-    private HoopDuel window;
+    private HoopDuels window;
     private String userName;
     private Team userTeam;
     private Team aiTeam;
     private Ball ball;
-    private Scoreboard scoreboard;
+    private ScoreBoard scoreboard;
     private PlayManager playManager;
     private DefenseManager defenseManager;
     private AIManager aiManager;
@@ -57,7 +57,7 @@ public class GamePanel extends JPanel implements ActionListener {
     private ArrayList<JButton> playButtons;
     private ArrayList<JButton> defenseButtons;
 
-    public GamePanel(HoopDuel window, String userName, Team userTeam, Team aiTeam) {
+    public GamePanel(HoopDuels window, String userName, Team userTeam, Team aiTeam) {
         this.window = window;
         this.userName = userName;
         this.userTeam = userTeam;
@@ -72,7 +72,7 @@ public class GamePanel extends JPanel implements ActionListener {
         aiManager = new AIManager(aiTeam, playManager.getAvailablePlays());
         playLog = new PlayLog();
         timeLeft = START_TIME;
-        scoreboard = new Scoreboard(userTeam, aiTeam, timeLeft);
+        scoreboard = new ScoreBoard(userTeam, aiTeam, timeLeft);
         ball = new Ball(200, 250);
         allCourtPlayers = new ArrayList<Player>();
         playButtons = new ArrayList<JButton>();

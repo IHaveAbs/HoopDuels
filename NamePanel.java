@@ -18,9 +18,9 @@ import javax.swing.JTextField;
 public class NamePanel extends JPanel implements ActionListener {
     private JTextField nameField;
     private JButton continueButton;
-    private HoopDuel window;
+    private HoopDuels window;
 
-    public NamePanel(HoopDuel window) {
+    public NamePanel(HoopDuels window) {
         this.window = window;
         setLayout(new BorderLayout());
         setBackground(new Color(245, 248, 252));

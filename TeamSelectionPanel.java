@@ -19,10 +19,10 @@ public class TeamSelectionPanel extends JPanel implements ActionListener {
     private JButton lakersButton;
     private JButton celticsButton;
     private JButton thunderButton;
-    private HoopDuel window;
+    private HoopDuels window;
     private Team selectedTeam;
 
-    public TeamSelectionPanel(HoopDuel window, String userName) {
+    public TeamSelectionPanel(HoopDuels window, String userName) {
         this.window = window;
         teams = new HashMap<String, Team>();
         buildTeams();
