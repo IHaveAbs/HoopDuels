@@ -4,8 +4,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 /**
- * Main application class for HoopDuel.
- * Creates the window and switches between screens.
+ * This is the HoopDuel class
+ * It manages the window frame and the classes connected to it.
  */
 public class HoopDuels {
     private JFrame frame;
