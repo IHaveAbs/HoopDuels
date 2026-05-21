@@ -1,13 +1,13 @@
 import java.awt.Graphics;
 
 /**
- * Objects that can be drawn on the HoopDuel court implement this interface.
+ * Interface for objects that can be drawn
  */
 public interface Drawable {
     /**
-     * Draws this object.
+     * Draws the object
      *
-     * @param g the Graphics object used for drawing
+     * @param g this is the Graphics
      */
     void draw(Graphics g);
 }
