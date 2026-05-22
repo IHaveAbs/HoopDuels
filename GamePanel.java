@@ -28,7 +28,6 @@ public class GamePanel extends JPanel implements ActionListener {
     private static final int RESULT_PAUSE_FRAMES = 70;
 
     private HoopDuels window;
-    private String userName;
     private Team userTeam;
     private Team aiTeam;
     private Ball ball;
@@ -60,7 +59,6 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public GamePanel(HoopDuels window, String userName, Team userTeam, Team aiTeam) {
         this.window = window;
-        this.userName = userName;
         this.userTeam = userTeam;
         this.aiTeam = aiTeam;
 
@@ -425,27 +423,55 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     private String getStageMessage(Play play, int stage, boolean userOnOffense) {
+        Team offense = userOnOffense ? userTeam : aiTeam;
         String teamName = userOnOffense ? userTeam.getTeamName() : "AI";
+
+        Player pg = offense.getStartingFive().get(0);
+        Player sg = offense.getStartingFive().get(1);
+        Player sf = offense.getStartingFive().get(2);
+        Player pf = offense.getStartingFive().get(3);
+        Player c = offense.getStartingFive().get(4);
+
         if (play.getName().equals("Pick and Roll")) {
-            if (stage == 0) return teamName + ": screener walks up to set the pick";
-            if (stage == 1) return teamName + ": ball handler uses the screen";
-            return teamName + ": roller dives to the rim";
+            if (stage == 0) {
+                return c.getName() + " walks up to set a screen for " + pg.getName();
+            } 
+            if (stage == 1){
+                return pg.getName() + " uses " + c.getName() + "'s screen up top";
+            }
+            return c.getName() + " rolls to the rim for the pass";
         }
+
         if (play.getName().equals("Isolation Drive")) {
-            if (stage == 0) return teamName + ": teammates clear out";
-            if (stage == 1) return teamName + ": scorer attacks downhill";
-            return teamName + ": drive finishes at the rim";
+            if (stage == 0) {
+                return teamName + " clears out for " + sf.getName();
+            }
+            if (stage == 1) {
+                return sf.getName() + " attacks downhill in isolation";
+            }
+            return sf.getName() + " drives hard to the rim";
         }
+
         if (play.getName().equals("Kick-Out Three")) {
-            if (stage == 0) return teamName + ": floor is spaced";
-            if (stage == 1) return teamName + ": drive collapses the defense";
-            return teamName + ": kick-out pass to shooter";
+            if (stage == 0) {
+                return sg.getName() + " spaces to the three-point line";
+            }
+            if (stage == 1) {
+                return sf.getName() + " drives and collapses the defense";
+            }
+            return sf.getName() + " kicks it out to " + sg.getName() + " for three";
         }
+
         if (play.getName().equals("Post Up")) {
-            if (stage == 0) return teamName + ": post player seals on the block";
-            if (stage == 1) return teamName + ": entry pass goes inside";
-            return teamName + ": post player turns to score";
+            if (stage == 0) {
+                return c.getName() + " seals his defender on the block";
+            }
+            if (stage == 1) {
+                return sg.getName() + " throws the entry pass to " + c.getName();
+            }
+            return c.getName() + " turns toward the rim to score";
         }
+
         return teamName + ": " + play.getName();
     }
 
@@ -699,8 +725,7 @@ public class GamePanel extends JPanel implements ActionListener {
         }
 
         public void actionPerformed(ActionEvent e) {
-            JButton clicked = (JButton) e.getSource();
-            runUserPossession(clicked.getText());
+            runUserPossession(play);
         }
     }
 
@@ -716,15 +741,15 @@ public class GamePanel extends JPanel implements ActionListener {
                 runAIPossession(defense);
             }
         }
-        public void showResult(String message) {
-            gameState.setCurrentMessage(message);
-            Timer clear = new Timer(1200, e -> {
-                gameState.setCurrentMessage("");
-                ((Timer)e.getSource()).stop();
-            });
-            clear.setRepeats(false);
-            clear.start();
-        }
+    }
+    public void showResult(String message) {
+        gameState.setCurrentMessage(message);
+        Timer clear = new Timer(1200, e -> {
+            gameState.setCurrentMessage("");
+            ((Timer)e.getSource()).stop();
+        });
+        clear.setRepeats(false);
+        clear.start();
     }
 }
 

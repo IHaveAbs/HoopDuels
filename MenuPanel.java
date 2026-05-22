@@ -17,11 +17,9 @@ public class MenuPanel extends JPanel implements ActionListener {
     private JButton startButton;
     private JButton tutorialButton;
     private HoopDuels window;
-    private String userName;
 
     public MenuPanel(HoopDuels window, String userName) {
         this.window = window;
-        this.userName = userName;
         setLayout(new BorderLayout());
         setBackground(new Color(232, 240, 250));
 

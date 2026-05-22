@@ -247,13 +247,7 @@ public class PlayManager {
         if (play == null || offense == null) {
             return null;
         }
-
-        // The shooter should match the play animation.
-        // For example, Kick-Out Three should go to the SG on the wing instead of
-        // automatically crediting the team's best shooter every time.
-        String preferred = play.getShooterPosition();
-        Player shooter = offense.getPlayerByPosition(preferred);
-
+        Player shooter = offense.getPlayerByPosition(play.getShooterPosition());
         if (shooter == null) {
             shooter = offense.getBestShooter(play.getShotType());
         }

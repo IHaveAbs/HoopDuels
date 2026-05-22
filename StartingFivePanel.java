@@ -11,6 +11,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import java.util.HashSet;
 
 /**
  * Lets the user choose exactly five players before the game starts.
@@ -21,12 +22,14 @@ public class StartingFivePanel extends JPanel implements ActionListener {
     private JButton startGameButton;
     private HoopDuels window;
     private ArrayList<JCheckBox> checkBoxes;
+    private HashSet<String> selectedPositions;
 
     public StartingFivePanel(HoopDuels window, Team selectedTeam) {
         this.window = window;
         this.selectedTeam = selectedTeam;
         this.selectedPlayers = new ArrayList<Player>();
         this.checkBoxes = new ArrayList<JCheckBox>();
+        this.selectedPositions = new HashSet<String>();
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -68,7 +71,12 @@ public class StartingFivePanel extends JPanel implements ActionListener {
     }
 
     public boolean validStartingFive() {
-        return selectedPlayers.size() == 5;
+        return selectedPlayers.size() == 5
+        && selectedPositions.contains("PG")
+        && selectedPositions.contains("SG")
+        && selectedPositions.contains("SF")
+        && selectedPositions.contains("PF")
+        && selectedPositions.contains("C");
     }
 
     public ArrayList<Player> getStartingFive() {
@@ -76,39 +84,67 @@ public class StartingFivePanel extends JPanel implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
+        selectedPlayers.clear();
+        selectedPositions.clear();
+
+        for (int i = 0; i < checkBoxes.size(); i++) {
+            JCheckBox box = checkBoxes.get(i);
+            Player player = selectedTeam.getRoster().get(i);
+            if (box.isSelected()) {
+                selectedPlayers.add(player);
+                selectedPositions.add(player.getPosition());
+            }
+        }
+
         if (e.getSource() == startGameButton) {
             if (!validStartingFive()) {
-                JOptionPane.showMessageDialog(this, "Please select exactly 5 players.");
+                JOptionPane.showMessageDialog(this, "Please select exactly one PG, SG, SF, PF, and C.");
                 return;
             }
-            selectedTeam.setStartingFive(selectedPlayers);
+
+            ArrayList<Player> orderedStartingFive = new ArrayList<Player>();
+            orderedStartingFive.add(getSelectedPlayerByPosition("PG"));
+            orderedStartingFive.add(getSelectedPlayerByPosition("SG"));
+            orderedStartingFive.add(getSelectedPlayerByPosition("SF"));
+            orderedStartingFive.add(getSelectedPlayerByPosition("PF"));
+            orderedStartingFive.add(getSelectedPlayerByPosition("C"));
+
+            selectedTeam.setStartingFive(orderedStartingFive);
+
             Team aiTeam = PlayerManager.getDefaultAITeam(selectedTeam.getTeamName());
             aiTeam.setStartingFive(firstFive(aiTeam));
+
             window.startGame(selectedTeam, aiTeam);
             return;
         }
 
-        selectedPlayers.clear();
+        updateCheckboxes();
+        startGameButton.setEnabled(validStartingFive());
+    }
+    private Player getSelectedPlayerByPosition(String position) {
+        for (Player p : selectedPlayers) {
+            if (p.getPosition().equals(position)) {
+                return p;
+            }
+        }
+        return null;
+    }
+    private void updateCheckboxes() {
         for (int i = 0; i < checkBoxes.size(); i++) {
             JCheckBox box = checkBoxes.get(i);
+            Player player = selectedTeam.getRoster().get(i);
+            String position = player.getPosition();
+
             if (box.isSelected()) {
-                selectedPlayers.add(selectedTeam.getRoster().get(i));
+                box.setEnabled(true);
+            } 
+            else if (selectedPositions.contains(position)) {
+                box.setEnabled(false);
+            } 
+            else {
+                box.setEnabled(true);
             }
         }
-
-        if (selectedPlayers.size() > 5) {
-            JCheckBox clicked = (JCheckBox) e.getSource();
-            clicked.setSelected(false);
-            selectedPlayers.clear();
-            for (int i = 0; i < checkBoxes.size(); i++) {
-                if (checkBoxes.get(i).isSelected()) {
-                    selectedPlayers.add(selectedTeam.getRoster().get(i));
-                }
-            }
-            JOptionPane.showMessageDialog(this, "You can only select 5 starters.");
-        }
-
-        startGameButton.setEnabled(validStartingFive());
     }
 
     private ArrayList<Player> firstFive(Team team) {
