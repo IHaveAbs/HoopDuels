@@ -78,6 +78,7 @@ public class GamePanel extends JPanel implements ActionListener {
         allCourtPlayers = new ArrayList<Player>();
         playButtons = new ArrayList<JButton>();
         defenseButtons = new ArrayList<JButton>();
+        gameState = new GameState();
 
         userTurn = true;
         overtime = false;
@@ -246,6 +247,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void updateGame() {
+        updateClock();
         animation.tick();
 
         if (state.equals("AI_TRANSITION")) {
@@ -697,7 +699,8 @@ public class GamePanel extends JPanel implements ActionListener {
         }
 
         public void actionPerformed(ActionEvent e) {
-            runUserPossession(play);
+            JButton clicked = (JButton) e.getSource();
+            runUserPossession(clicked.getText());
         }
     }
 
@@ -713,17 +716,18 @@ public class GamePanel extends JPanel implements ActionListener {
                 runAIPossession(defense);
             }
         }
+        public void showResult(String message) {
+            gameState.setCurrentMessage(message);
+            Timer clear = new Timer(1200, e -> {
+                gameState.setCurrentMessage("");
+                ((Timer)e.getSource()).stop();
+            });
+            clear.setRepeats(false);
+            clear.start();
+        }
     }
 }
-public void showResult(String message) {
-    GameState.setCurrentMessage(message);
-    Timer clear = new Timer(1200, e -> {
-        gameState.setCurrentMessage("");
-        ((Timer)e.getSource()).stop();
-    });
-    clear.setRepeats(false);
-    clear.start();
-}
+
 
 
 

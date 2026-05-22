@@ -97,9 +97,8 @@ public class Player implements Drawable {
      * Moves the player a small step toward the target location.
      */
     public void moveToTarget() {
-        double speed = 0.09;
-        x += (targetX - x) * speed;
-        y += (targetY - y) * speed;
+        x = moveOneAxis(x, targetX);
+        y = moveOneAxis(y, targetY);
     }
 
     private int moveOneAxis(int current, int target) {
