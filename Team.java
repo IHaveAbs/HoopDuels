@@ -168,7 +168,7 @@ public class Team {
         totalFGMade = 0;
         totalFGAttempted = 0;
         for (Player p : roster){
-            p.resetGameStats();
+            p.resetStats();
         }
         startingFive.clear();
     }

@@ -11,7 +11,7 @@ public class Animation {
 
     public void tick() {
         for (Player p : players) {
-            p.moveTowardTarget();
+            p.moveToTarget();
         }
         ball.moveTowardTarget();
     }

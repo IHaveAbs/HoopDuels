@@ -80,7 +80,6 @@ public class GamePanel extends JPanel implements ActionListener {
         defenseButtons = new ArrayList<JButton>();
 
         userTurn = true;
-        animation = false;
         overtime = false;
         state = "WAITING_USER_PLAY";
         resultMessage = "Choose an offensive play.";
@@ -362,7 +361,7 @@ public class GamePanel extends JPanel implements ActionListener {
         showPlayButtons(false);
         showDefenseButtons(false);
         state = "USER_ANIMATING";
-        animationRunning = true;
+        gameState.setAnimationRunning(true);
         resultMessage = userTeam.getTeamName() + " set up " + play.getName();
         playLog.addMessage(userTeam.getTeamName() + ": " + play.getName());
         applyCurrentPlayStage();
@@ -384,7 +383,7 @@ public class GamePanel extends JPanel implements ActionListener {
         showDefenseButtons(false);
         showPlayButtons(false);
         state = "AI_TRANSITION";
-        animationRunning = true;
+        gameState.setAnimationRunning(true);
         resultMessage = "Sprint back into " + defenseName + "!";
         playLog.addMessage("Defense: " + defenseName);
         setTransitionTargetsForAIOffense();
@@ -633,7 +632,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     private void finishPossessionAfterPause() {
-        animationRunning = false;
+        gameState.setAnimationRunning(false);
         scoreboard.nextPossession();
 
         if (overtime && userTeam.getScore() != aiTeam.getScore()) {
@@ -719,7 +718,7 @@ public class GamePanel extends JPanel implements ActionListener {
 public void showResult(String message) {
     GameState.setCurrentMessage(message);
     Timer clear = new Timer(1200, e -> {
-        GameState.setCurrentMessage("");
+        gameState.setCurrentMessage("");
         ((Timer)e.getSource()).stop();
     });
     clear.setRepeats(false);
