@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -52,10 +51,10 @@ public class GamePanel extends JPanel implements ActionListener {
     private int totalPlayStages;
     private Animation animation;
     private GameState gameState;
+    private Court court;
+    private Button buttons;
 
     private ArrayList<Player> allCourtPlayers;
-    private ArrayList<JButton> playButtons;
-    private ArrayList<JButton> defenseButtons;
 
     public GamePanel(HoopDuels window, String userName, Team userTeam, Team aiTeam) {
         this.window = window;
@@ -74,9 +73,9 @@ public class GamePanel extends JPanel implements ActionListener {
         scoreboard = new ScoreBoard(userTeam, aiTeam, timeLeft);
         ball = new Ball(200, 250);
         allCourtPlayers = new ArrayList<Player>();
-        playButtons = new ArrayList<JButton>();
-        defenseButtons = new ArrayList<JButton>();
         gameState = new GameState();
+        court = new Court();
+        buttons = new Button();
 
         userTurn = true;
         overtime = false;
@@ -90,10 +89,10 @@ public class GamePanel extends JPanel implements ActionListener {
 
         setupInitialPositions();
         animation = new Animation(allCourtPlayers, ball);
-        createPlayButtons();
-        createDefenseButtons();
-        showPlayButtons(true);
-        showDefenseButtons(false);
+        buttons.createPlayButtons(this, playManager.getAvailablePlays(), this);
+        buttons.createDefenseButtons(this, defenseManager.getDefensiveOptions(), this);
+        buttons.showPlayButtons(true);
+        buttons.showDefenseButtons(false);  
 
         animTimer = new Timer(FRAME_DELAY, this);
         animTimer.start();
@@ -158,49 +157,9 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
-    private void createPlayButtons() {
-        ArrayList<Play> plays = playManager.getAvailablePlays();
-        int startX = 810;
-        int startY = 90;
-        for (int i = 0; i < plays.size(); i++) {
-            Play play = plays.get(i);
-            JButton button = new JButton(play.getName());
-            button.setBounds(startX, startY + i * 45, 250, 35);
-            button.addActionListener(new PlayButtonListener(play));
-            playButtons.add(button);
-            add(button);
-        }
-    }
-
-    private void createDefenseButtons() {
-        ArrayList<String> defenses = defenseManager.getDefensiveOptions();
-        int startX = 810;
-        int startY = 90;
-        for (int i = 0; i < defenses.size(); i++) {
-            String defense = defenses.get(i);
-            JButton button = new JButton(defense);
-            button.setBounds(startX, startY + i * 45, 250, 35);
-            button.addActionListener(new DefenseButtonListener(defense));
-            defenseButtons.add(button);
-            add(button);
-        }
-    }
-
-    private void showPlayButtons(boolean show) {
-        for (JButton b : playButtons) {
-            b.setVisible(show);
-        }
-    }
-
-    private void showDefenseButtons(boolean show) {
-        for (JButton b : defenseButtons) {
-            b.setVisible(show);
-        }
-    }
-
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        drawCourt(g);
+        court.drawCourt(g);
         drawPlayers(g);
         ball.draw(g);
         scoreboard.draw(g, userTeam, aiTeam);
@@ -259,8 +218,8 @@ public class GamePanel extends JPanel implements ActionListener {
                 }
                 state = "WAITING_USER_PLAY";
                 resultMessage = "Choose your next offensive play.";
-                showPlayButtons(true);
-                showDefenseButtons(false);
+                buttons.showPlayButtons(true);
+                buttons.showDefenseButtons(false);
             }
         } else if (state.equals("USER_ANIMATING") || state.equals("AI_ANIMATING")) {
             if (allPlayersAtTarget() && !ball.isMoving()) {
@@ -299,43 +258,6 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
-    public void drawCourt(Graphics g) {
-        g.setColor(new Color(210, 160, 90));
-        g.fillRect(COURT_X, COURT_Y, COURT_W, COURT_H);
-        g.setColor(Color.BLACK);
-        g.drawRect(COURT_X, COURT_Y, COURT_W, COURT_H);
-
-        // Center line and circle
-        g.drawLine(COURT_X + COURT_W / 2, COURT_Y, COURT_X + COURT_W / 2, COURT_Y + COURT_H);
-        g.drawOval(COURT_X + COURT_W / 2 - 60, COURT_Y + COURT_H / 2 - 60, 120, 120);
-
-        // Hoops/backboards drawn from a top-down view.
-        // Left basket faces right: backboard is on the left, rim extends into the court.
-        // Right basket faces left: backboard is on the right, rim extends into the court.
-        int leftBackboardX = COURT_X + 14;
-        int rightBackboardX = COURT_X + COURT_W - 14;
-        g.setColor(Color.WHITE);
-        g.fillRect(leftBackboardX - 3, HOOP_Y - 36, 6, 72);
-        g.fillRect(rightBackboardX - 3, HOOP_Y - 36, 6, 72);
-        g.setColor(Color.BLACK);
-        g.drawRect(leftBackboardX - 3, HOOP_Y - 36, 6, 72);
-        g.drawRect(rightBackboardX - 3, HOOP_Y - 36, 6, 72);
-        g.setColor(Color.RED);
-        g.drawOval(LEFT_HOOP_X - 12, HOOP_Y - 12, 24, 24);
-        g.drawOval(RIGHT_HOOP_X - 12, HOOP_Y - 12, 24, 24);
-        g.setColor(Color.BLACK);
-        g.drawLine(leftBackboardX, HOOP_Y, LEFT_HOOP_X - 12, HOOP_Y);
-        g.drawLine(rightBackboardX, HOOP_Y, RIGHT_HOOP_X + 12, HOOP_Y);
-
-        // Paint/key areas
-        g.drawRect(COURT_X, HOOP_Y - 85, 150, 170);
-        g.drawRect(COURT_X + COURT_W - 150, HOOP_Y - 85, 150, 170);
-
-        // Simple three-point arc suggestion
-        g.drawArc(COURT_X + COURT_W - 250, HOOP_Y - 170, 230, 340, 90, 180);
-        g.drawArc(COURT_X + 20, HOOP_Y - 170, 230, 340, -90, 180);
-    }
-
     public void drawPlayers(Graphics g) {
         for (Player p : allCourtPlayers) {
             p.draw(g);
@@ -358,8 +280,8 @@ public class GamePanel extends JPanel implements ActionListener {
         currentPlayStage = 0;
         totalPlayStages = playManager.getStageCount(play);
         resultPause = 0;
-        showPlayButtons(false);
-        showDefenseButtons(false);
+        buttons.showPlayButtons(false);
+        buttons.showDefenseButtons(false);
         state = "USER_ANIMATING";
         gameState.setAnimationRunning(true);
         resultMessage = userTeam.getTeamName() + " set up " + play.getName();
@@ -380,8 +302,8 @@ public class GamePanel extends JPanel implements ActionListener {
         currentPlayStage = 0;
         totalPlayStages = playManager.getStageCount(activePlay);
         resultPause = 0;
-        showDefenseButtons(false);
-        showPlayButtons(false);
+        buttons.showDefenseButtons(false);
+        buttons.showPlayButtons(false);
         state = "AI_TRANSITION";
         gameState.setAnimationRunning(true);
         resultMessage = "Sprint back into " + defenseName + "!";
@@ -671,16 +593,16 @@ public class GamePanel extends JPanel implements ActionListener {
         if (userTurn) {
             state = "WAITING_DEFENSE";
             resultMessage = "Choose your defense for the AI possession.";
-            showDefenseButtons(true);
-            showPlayButtons(false);
+            buttons.showDefenseButtons(true);
+            buttons.showPlayButtons(false);
             if (aiTeam.getStartingFive().size() > 0) {
                 ball.setHolder(playManager.getBallHandler(aiTeam));
             }
         } else {
             state = "USER_TRANSITION";
             resultMessage = "Your team pushes back into offense.";
-            showPlayButtons(false);
-            showDefenseButtons(false);
+            buttons.showPlayButtons(false);
+            buttons.showDefenseButtons(false);
             setTransitionTargetsForUserOffense();
         }
     }
@@ -702,8 +624,8 @@ public class GamePanel extends JPanel implements ActionListener {
 
     private void endGame() {
         state = "GAME_OVER";
-        showPlayButtons(false);
-        showDefenseButtons(false);
+        buttons.showPlayButtons(false);
+        buttons.showDefenseButtons(false);
         animTimer.stop();
         window.showPostGamePanel(userTeam, aiTeam);
     }
@@ -716,32 +638,7 @@ public class GamePanel extends JPanel implements ActionListener {
         }
         return true;
     }
-
-    private class PlayButtonListener implements ActionListener {
-        private Play play;
-
-        public PlayButtonListener(Play play) {
-            this.play = play;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            runUserPossession(play);
-        }
-    }
-
-    private class DefenseButtonListener implements ActionListener {
-        private String defense;
-
-        public DefenseButtonListener(String defense) {
-            this.defense = defense;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            if (state.equals("WAITING_DEFENSE")) {
-                runAIPossession(defense);
-            }
-        }
-    }
+    
     public void showResult(String message) {
         gameState.setCurrentMessage(message);
         Timer clear = new Timer(1200, e -> {
