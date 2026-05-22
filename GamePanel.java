@@ -40,7 +40,6 @@ public class GamePanel extends JPanel implements ActionListener {
     private Timer animTimer;
     private int timeLeft;
     private boolean userTurn;
-    private boolean animationRunning;
     private boolean overtime;
     private String state;
     private String resultMessage;
@@ -52,6 +51,8 @@ public class GamePanel extends JPanel implements ActionListener {
     private String activeDefense;
     private int currentPlayStage;
     private int totalPlayStages;
+    private Animation animation;
+    private GameState gameState;
 
     private ArrayList<Player> allCourtPlayers;
     private ArrayList<JButton> playButtons;
@@ -79,7 +80,7 @@ public class GamePanel extends JPanel implements ActionListener {
         defenseButtons = new ArrayList<JButton>();
 
         userTurn = true;
-        animationRunning = false;
+        animation = false;
         overtime = false;
         state = "WAITING_USER_PLAY";
         resultMessage = "Choose an offensive play.";
@@ -90,6 +91,7 @@ public class GamePanel extends JPanel implements ActionListener {
         totalPlayStages = 0;
 
         setupInitialPositions();
+        animation = new Animation(allCourtPlayers, ball);
         createPlayButtons();
         createDefenseButtons();
         showPlayButtons(true);
@@ -245,11 +247,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void updateGame() {
-        updateClock();
-        for (Player p : allCourtPlayers) {
-            p.moveTowardTarget();
-        }
-        ball.moveTowardTarget();
+        animation.tick();
 
         if (state.equals("AI_TRANSITION")) {
             if (allPlayersAtTarget() && !ball.isMoving()) {
@@ -717,6 +715,15 @@ public class GamePanel extends JPanel implements ActionListener {
             }
         }
     }
+}
+public void showResult(String message) {
+    GameState.setCurrentMessage(message);
+    Timer clear = new Timer(1200, e -> {
+        GameState.setCurrentMessage("");
+        ((Timer)e.getSource()).stop();
+    });
+    clear.setRepeats(false);
+    clear.start();
 }
 
 

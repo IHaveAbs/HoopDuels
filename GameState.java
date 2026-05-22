@@ -6,43 +6,45 @@ public class GameState {
     private String currentMessage;
 
     public GameState() {
-        userTurn = true;
-        animationRunning = false;
-        overtime = false;
-        gameOver = false;
-        currentMessage = "";
+        reset();
     }
-
     public boolean isUserTurn() {
         return userTurn;
     }
-    public boolean isAnimationRunning() {
+    public boolean isAnimationRunning(){
         return animationRunning;
     }
-    public boolean isOvertime() {
+    public boolean isOverTime() {
         return overtime;
     }
-    public boolean isGameOver() {
+        public boolean isGameOver() {
         return gameOver;
     }
+
     public String getCurrentMessage() {
         return currentMessage;
     }
-    public void setUserTurn(boolean b){
-        userTurn = b;
+
+    public void setUserTurn(boolean userTurn) {
+        this.userTurn = userTurn;
     }
-    public void setAnimationRunning(boolean b) {
-        animationRunning = b;
+
+    public void setAnimationRunning(boolean animationRunning) {
+        this.animationRunning = animationRunning;
     }
-    public void setOvertime(boolean b){
-        overtime = b;
+
+    public void setOvertime(boolean overtime) {
+        this.overtime = overtime;
     }
-    public void setGameOver(boolean b){
-        gameOver = b;
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
     }
-    public void setCurrentMessage(String msg){
-        currentMessage = msg;
+
+    public void setCurrentMessage(String currentMessage) {
+        this.currentMessage = currentMessage;
     }
+
     public void reset() {
         userTurn = true;
         animationRunning = false;
@@ -51,4 +53,7 @@ public class GameState {
         currentMessage = "";
     }
 }
+
+    
+    
 

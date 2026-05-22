@@ -84,6 +84,21 @@ public class HoopDuels {
         return frame;
     }
 
+    public void resetGame() {
+        if (userTeam != null) {
+            userTeam.resetGameStats();
+        }
+        if (aiTeam != null) {
+            aiTeam.resetGameStats();
+        }
+
+        userName = null;
+        userTeam = null;
+        aiTeam = null;
+
+        showNamePanel();
+    }
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

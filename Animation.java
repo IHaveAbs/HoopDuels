@@ -1,36 +1,31 @@
 import java.util.ArrayList;
 
 public class Animation {
-    private Team userTeam;
-    private Team aiTeam;
+    private ArrayList<Player> players;
     private Ball ball;
 
-    public Animation(Team userTeam, Team aiTeam, Ball ball) {
-        this.userTeam = userTeam;
-        this.aiTeam = aiTeam;
+    public Animation(ArrayList<Player> players, Ball ball) {
+        this.players = players;
         this.ball = ball;
     }
 
     public void tick() {
-        for (Player p : userTeam.getStartingFive()) {
-            p.moveToTarget();
+        for (Player p : players) {
+            p.moveTowardTarget();
         }
-        for (Player p : aiTeam.getStartingFive()){
-            p.moveToTarget();
-        }
-        ball.moveToTarget();
+        ball.moveTowardTarget();
     }
 
-    public void resetFormation(Team team, int[][] formation) {
-        ArrayList<Player> five = team.getStartingFive();
-        for (int i = 0; i < five.size() && i < formation.length; i++)
-            five.get(i).setTarget(formation[i][0], formation[i][1]);
+    public boolean allPlayersAtTarget() {
+        for (Player p : players) {
+            if (!p.isAtTarget()) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    public void goToFormation(Team team, int[][] formation) {
-        ArrayList<Player> five = team.getStartingFive();
-        for (int i = 0; i < five.size() && i < formation.length; i++){
-            five.get(i).setPosition(formation[i][0], formation[i][1]);
-        }
+    public boolean animationFinished() {
+        return allPlayersAtTarget() && !ball.isMoving();
     }
 }

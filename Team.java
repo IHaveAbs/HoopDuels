@@ -163,4 +163,13 @@ public class Team {
     public int getTotalFGAttempted() {
         return totalFGAttempted;
     }
+    public void resetForNewGame() {
+        score = 0;
+        totalFGMade = 0;
+        totalFGAttempted = 0;
+        for (Player p : roster){
+            p.resetGameStats();
+        }
+        startingFive.clear();
+    }
 }
