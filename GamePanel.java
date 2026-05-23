@@ -50,7 +50,7 @@ public class GamePanel extends JPanel implements ActionListener {
     private int currentPlayStage;
     private int totalPlayStages;
     private Animation animation;
-    private GameState gameState;
+    private Game game;
     private Court court;
     private Button buttons;
 
@@ -73,7 +73,7 @@ public class GamePanel extends JPanel implements ActionListener {
         scoreboard = new ScoreBoard(userTeam, aiTeam, timeLeft);
         ball = new Ball(200, 250);
         allCourtPlayers = new ArrayList<Player>();
-        gameState = new GameState();
+        game = new Game();
         court = new Court();
         buttons = new Button();
 
@@ -283,7 +283,7 @@ public class GamePanel extends JPanel implements ActionListener {
         buttons.showPlayButtons(false);
         buttons.showDefenseButtons(false);
         state = "USER_ANIMATING";
-        gameState.setAnimationRunning(true);
+        game.setAnimationRunning(true);
         resultMessage = userTeam.getTeamName() + " set up " + play.getName();
         playLog.addMessage(userTeam.getTeamName() + ": " + play.getName());
         applyCurrentPlayStage();
@@ -305,7 +305,7 @@ public class GamePanel extends JPanel implements ActionListener {
         buttons.showDefenseButtons(false);
         buttons.showPlayButtons(false);
         state = "AI_TRANSITION";
-        gameState.setAnimationRunning(true);
+        game.setAnimationRunning(true);
         resultMessage = "Sprint back into " + defenseName + "!";
         playLog.addMessage("Defense: " + defenseName);
         setTransitionTargetsForAIOffense();
@@ -582,7 +582,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     private void finishPossessionAfterPause() {
-        gameState.setAnimationRunning(false);
+        game.setAnimationRunning(false);
         scoreboard.nextPossession();
 
         if (overtime && userTeam.getScore() != aiTeam.getScore()) {
@@ -640,9 +640,9 @@ public class GamePanel extends JPanel implements ActionListener {
     }
     
     public void showResult(String message) {
-        gameState.setCurrentMessage(message);
+        game.setCurrentMessage(message);
         Timer clear = new Timer(1200, e -> {
-            gameState.setCurrentMessage("");
+            game.setCurrentMessage("");
             ((Timer)e.getSource()).stop();
         });
         clear.setRepeats(false);
