@@ -1,11 +1,11 @@
-public class GameState {
+public class Game {
     private boolean userTurn;
     private boolean animationRunning;
     private boolean overtime;
     private boolean gameOver;
     private String currentMessage;
 
-    public GameState() {
+    public Game() {
         reset();
     }
     public boolean isUserTurn() {
