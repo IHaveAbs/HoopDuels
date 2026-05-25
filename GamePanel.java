@@ -274,7 +274,7 @@ public class GamePanel extends JPanel implements ActionListener {
             return;
         }
         activePlay = play;
-        activeShotType = play.getShotType();
+        activeShotType = play.getShot();
         activeShooter = playManager.chooseShooter(play, userTeam);
         userTurn = true;
         currentPlayStage = 0;
@@ -297,7 +297,7 @@ public class GamePanel extends JPanel implements ActionListener {
         activeDefense = defenseName;
         userTurn = false;
         activePlay = aiManager.choosePlay(aiTeam.getScore(), userTeam.getScore(), timeLeft);
-        activeShotType = activePlay.getShotType();
+        activeShotType = activePlay.getShot();
         activeShooter = aiManager.chooseShooter(aiTeam, activePlay);
         currentPlayStage = 0;
         totalPlayStages = playManager.getStageCount(activePlay);

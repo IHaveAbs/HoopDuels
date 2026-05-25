@@ -249,16 +249,16 @@ public class PlayManager {
         }
         Player shooter = offense.getPlayerByPosition(play.getShooterPosition());
         if (shooter == null) {
-            shooter = offense.getBestShooter(play.getShotType());
+            shooter = offense.getBestShooter(play.getShot());
         }
         return shooter;
     }
 
-    public String getShotType(Play play) {
+    public String getShot(Play play) {
         if (play == null) {
             return "mid";
         }
-        return play.getShotType();
+        return play.getShot();
     }
 
     public ArrayList<Play> getAvailablePlays() {

@@ -34,7 +34,7 @@ public class Play {
      * gets the shot type
      * @return shotType
      */
-    public String getShotType() {
+    public String getShot() {
         return shotType;
     }
     /**

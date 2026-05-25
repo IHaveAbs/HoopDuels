@@ -3,74 +3,64 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * Controls the AI team's possessions.
- * The AI first uses a Queue of planned plays, then falls back to weighted random plays.
+ * This is the manager for the AI.
+ * The AI works by having an arraylist of plays that it chooses from, but if its losing it will try to score more threes to win back more points.
  */
 public class AIManager {
-    private Team aiTeam;
-    private Queue<Play> playQueue;
-    private ArrayList<Play> fallbackPlays;
 
-    public AIManager(Team aiTeam, ArrayList<Play> availablePlays) {
-        this.aiTeam = aiTeam;
-        this.fallbackPlays = new ArrayList<Play>(availablePlays);
-        this.playQueue = new LinkedList<Play>();
+    private Team team;
+    private Queue<Play> queue;
+    private ArrayList<Play> playswhenlosing;
+
+    public AIManager(Team t, ArrayList<Play> plays) {
+        team = t;
+        playswhenlosing = new ArrayList<Play>(plays);
+        queue = new LinkedList<Play>();
         resetQueue();
     }
-
-    public Play choosePlay(int aiScore, int userScore, int timeLeft) {
-        if (!playQueue.isEmpty()) {
-            return playQueue.poll();
+    public Play choosePlay(int ai_score, int user_score, int timeleft) {
+        if (!queue.isEmpty()) {
+            return queue.poll();
         }
-
-        if (fallbackPlays.size() == 0) {
-            return null;
+        if (playswhenlosing.size() == 0) {
+           return null;
         }
-
-        // Simple weighted idea: if AI is losing late, it likes threes more.
-        if (aiScore < userScore && timeLeft < 180) {
-            for (Play p : fallbackPlays) {
-                if (p.getShotType().equals("three") && Math.random() < 0.55) {
+        if (ai_score < user_score && timeleft < 180) {
+            for (Play p : playswhenlosing) {
+                if (p.getShot().equals("three") && Math.random() < 0.70) {
                     return p;
                 }
             }
         }
 
-        int index = (int) (Math.random() * fallbackPlays.size());
-        return fallbackPlays.get(index);
+        int randomplay = (int)((int)Math.random()*(int)playswhenlosing.size());
+        return playswhenlosing.get(randomplay);
     }
-
-    public Player chooseShooter(Team aiTeam, Play play) {
-        if (aiTeam == null || play == null) {
+    public Player chooseShooter(Team t, Play play) {
+        if (t == null || play == null) {
             return null;
         }
-        Player shooter = aiTeam.getPlayerByPosition(play.getShooterPosition());
+        Player shooter = t.getPlayerByPosition(play.getShooterPosition());
         if (shooter == null) {
-            shooter = aiTeam.getBestShooter(play.getShotType());
+            shooter = t.getBestShooter(play.getShot());
         }
         return shooter;
     }
-
-    public void runAIPossession(Team aiTeam, String defenseChoice) {
-        // GamePanel handles the visual possession. This method is kept for the spec.
-        this.aiTeam = aiTeam;
-    }
-
     public void resetQueue() {
-        playQueue.clear();
-        if (fallbackPlays.size() >= 4) {
-            playQueue.add(fallbackPlays.get(0));
-            playQueue.add(fallbackPlays.get(2));
-            playQueue.add(fallbackPlays.get(1));
-            playQueue.add(fallbackPlays.get(3));
+        queue.clear();
+        if (playswhenlosing.size() >= 4) {
+            queue.add(playswhenlosing.get(0));
+            queue.add(playswhenlosing.get(2));
+            queue.add(playswhenlosing.get(1));
+            queue.add(playswhenlosing.get(3));
         } else {
-            for (Play p : fallbackPlays) {
-                playQueue.add(p);
+            for (Play p : playswhenlosing) {
+                queue.add(p);
             }
         }
     }
 
-    public Team getAiTeam() {
-        return aiTeam;
+    public Team getTeam() {
+        return team;
     }
 }
