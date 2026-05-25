@@ -5,77 +5,65 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- * Lets the user choose which team they want to use.
+ * this is the panel for team selection.
+ * Creates buttons for the teams where players can choose from.
  */
 public class TeamSelectionPanel extends JPanel implements ActionListener {
     private HashMap<String, Team> teams;
-    private JButton warriorsButton;
-    private JButton lakersButton;
-    private JButton celticsButton;
-    private JButton thunderButton;
+    private JButton warriorsSelect;
+    private JButton lakersSelect;
+    private JButton celticsSelect;
+    private JButton thunderSelect;
     private HoopDuels window;
-    private Team selectedTeam;
+    private Team selected;
 
-    public TeamSelectionPanel(HoopDuels window, String userName) {
-        this.window = window;
+    public TeamSelectionPanel(HoopDuels w, String name) {
+        window = w;
         teams = new HashMap<String, Team>();
         buildTeams();
 
         setLayout(new BorderLayout());
-        setBackground(new Color(247, 247, 247));
+        setBackground(new Color(255, 255, 255));
 
-        JLabel title = new JLabel("Hi " + userName + ", choose your team", JLabel.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 34));
-        title.setBorder(BorderFactory.createEmptyBorder(80, 0, 30, 0));
-        add(title, BorderLayout.NORTH);
+        JLabel instruction = new JLabel("Choose your team, " + name, JLabel.CENTER);
+        instruction.setFont(new Font("Arial", Font.BOLD, 33));
+        add(instruction, BorderLayout.NORTH);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 20, 20));
-        buttonPanel.setOpaque(false);
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(40, 260, 180, 260));
-
-        warriorsButton = createButton("Warriors");
-        lakersButton = createButton("Lakers");
-        celticsButton = createButton("Celtics");
-        thunderButton = createButton("Thunder");
-
-        buttonPanel.add(warriorsButton);
-        buttonPanel.add(lakersButton);
-        buttonPanel.add(celticsButton);
-        buttonPanel.add(thunderButton);
-        add(buttonPanel, BorderLayout.CENTER);
+        JPanel buttons = new JPanel(new GridLayout(2, 2, 20, 20));
+        warriorsSelect = makeButton("Warriors");
+        lakersSelect = makeButton("Lakers");
+        celticsSelect = makeButton("Celtics");
+        thunderSelect = makeButton("Thunder");
+        buttons.add(warriorsSelect);
+        buttons.add(lakersSelect);
+        buttons.add(celticsSelect);
+        buttons.add(thunderSelect);
+        add(buttons, BorderLayout.CENTER);
     }
-
-    private JButton createButton(String text) {
-        JButton button = new JButton(text);
-        button.setFont(new Font("Arial", Font.BOLD, 24));
-        button.addActionListener(this);
-        return button;
+    private JButton makeButton(String text) {
+        JButton temp = new JButton(text);
+        temp.setFont(new Font("Arial", Font.BOLD, 23));
+        temp.addActionListener(this);
+        return temp;
     }
-
     private void buildTeams() {
-        Team[] allTeams = PlayerManager.getAllTeams();
-        for (Team t : allTeams) {
+        Team[] all = PlayerManager.getAllTeams();
+        for (Team t : all) {
             teams.put(t.getTeamName(), t);
         }
     }
-
-    public void createTeamButtons() {
-        // Buttons are created in the constructor.
+    public Team getselected() {
+        return selected;
     }
-
-    public Team getSelectedTeam() {
-        return selectedTeam;
-    }
-
     public void actionPerformed(ActionEvent e) {
-        String teamName = ((JButton) e.getSource()).getText();
-        selectedTeam = teams.get(teamName);
-        window.showStartingFivePanel(selectedTeam);
+        JButton temp = (JButton)e.getSource();
+        String name = temp.getText();
+        selected = teams.get(name);
+        window.showStartingFivePanel(selected);
     }
 }
