@@ -20,11 +20,14 @@ public class Ball implements Drawable {
     public Ball(int x, int y) {
         this.x = x;
         this.y = y;
-        this.targetX = x;
-        this.targetY = y;
+
+        targetX = x;
+        targetY = y;
+        
         this.currentHolder = null;
         this.lastPasser = null;
-        this.moving = false;
+
+        moving = false;
     }
 
     public void draw(Graphics g) {
