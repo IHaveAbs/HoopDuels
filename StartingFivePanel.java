@@ -11,72 +11,68 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import java.util.HashSet;
 
 /**
- * Lets the user choose exactly five players before the game starts.
+ * This is the starting five panel where users can choose the 5 players they want.
  */
 public class StartingFivePanel extends JPanel implements ActionListener {
     private Team selectedTeam;
     private ArrayList<Player> selectedPlayers;
     private JButton startGameButton;
     private HoopDuels window;
-    private ArrayList<JCheckBox> checkBoxes;
-    private HashSet<String> selectedPositions;
+    private ArrayList<JCheckBox> checkboxes;
+    private HashSet<String> positions;
 
-    public StartingFivePanel(HoopDuels window, Team selectedTeam) {
-        this.window = window;
-        this.selectedTeam = selectedTeam;
-        this.selectedPlayers = new ArrayList<Player>();
-        this.checkBoxes = new ArrayList<JCheckBox>();
-        this.selectedPositions = new HashSet<String>();
+    public StartingFivePanel(HoopDuels w, Team s) {
+        window = w;
+        selectedTeam = s;
+        selectedPlayers = new ArrayList<Player>();
+        checkboxes = new ArrayList<JCheckBox>();
+        positions = new HashSet<String>();
 
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
+        setBackground(new Color(255, 255, 255));
 
-        JLabel title = new JLabel("Select exactly 5 starters for the " + selectedTeam.getTeamName(), JLabel.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 28));
-        title.setBorder(BorderFactory.createEmptyBorder(45, 0, 20, 0));
-        add(title, BorderLayout.NORTH);
+        JLabel instructions = new JLabel("Select your 5 starters for "+selectedTeam.getTeamName(), JLabel.CENTER);
+        instructions.setFont(new Font("Arial", Font.BOLD, 27));
+        instructions.setBorder(BorderFactory.createEmptyBorder(45, 0, 20, 0));
+        add(instructions, BorderLayout.NORTH);
 
         displayRoster(selectedTeam);
     }
-
     public void displayRoster(Team team) {
-        JPanel rosterPanel = new JPanel(new GridLayout(0, 2, 14, 14));
-        rosterPanel.setBorder(BorderFactory.createEmptyBorder(20, 160, 20, 160));
-        rosterPanel.setOpaque(false);
+        JPanel roster = new JPanel(new GridLayout(0, 2, 13, 13));
+        Border temp = BorderFactory.createEmptyBorder(20, 165, 20, 165);
+        roster.setBorder(temp);
 
-        for (Player p : team.getRoster()) {
-            JCheckBox box = new JCheckBox(p.getName() + " (" + p.getPosition() + ")"
-                + " | Rim " + p.getShotChance("rim")
-                + " Mid " + p.getShotChance("mid")
-                + " 3PT " + p.getShotChance("three"));
+        for (Player p : team.getPlayers()) {
+            String playerDetails = p.getName() + " (" + p.getPosition() + ")" + ": Rim " + p.getShotChance("rim") + " Mid " + p.getShotChance("mid") + " 3PT " + p.getShotChance("three");
+            JCheckBox box = new JCheckBox(playerDetails);
             box.setFont(new Font("Arial", Font.PLAIN, 16));
             box.addActionListener(this);
-            checkBoxes.add(box);
-            rosterPanel.add(box);
+            checkboxes.add(box);
+            roster.add(box);
         }
 
         startGameButton = new JButton("Start Game");
-        startGameButton.setFont(new Font("Arial", Font.BOLD, 22));
-        startGameButton.setEnabled(false);
+        startGameButton.setFont(new Font("Arial", Font.BOLD, 23));
         startGameButton.addActionListener(this);
 
-        add(rosterPanel, BorderLayout.CENTER);
+        add(roster, BorderLayout.CENTER);
+
+
         JPanel south = new JPanel();
-        south.setOpaque(false);
         south.add(startGameButton);
         add(south, BorderLayout.SOUTH);
     }
-
-    public boolean validStartingFive() {
-        return selectedPlayers.size() == 5
-        && selectedPositions.contains("PG")
-        && selectedPositions.contains("SG")
-        && selectedPositions.contains("SF")
-        && selectedPositions.contains("PF")
-        && selectedPositions.contains("C");
+    public boolean startingFiveOK() {
+        if (selectedPlayers.size() == 5 && positions.contains("PG") && positions.contains("SG") && positions.contains("SF") && positions.contains("PF") && positions.contains("C")) {
+            return true;
+        }
+        return false;
+        
     }
 
     public ArrayList<Player> getStartingFive() {
@@ -85,19 +81,19 @@ public class StartingFivePanel extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         selectedPlayers.clear();
-        selectedPositions.clear();
+        positions.clear();
 
-        for (int i = 0; i < checkBoxes.size(); i++) {
-            JCheckBox box = checkBoxes.get(i);
-            Player player = selectedTeam.getRoster().get(i);
+        for (int i = 0; i < checkboxes.size(); i++) {
+            JCheckBox box = checkboxes.get(i);
+            Player player = selectedTeam.getPlayers().get(i);
             if (box.isSelected()) {
                 selectedPlayers.add(player);
-                selectedPositions.add(player.getPosition());
+                positions.add(player.getPosition());
             }
         }
 
         if (e.getSource() == startGameButton) {
-            if (!validStartingFive()) {
+            if (!startingFiveOK()) {
                 JOptionPane.showMessageDialog(this, "Please select exactly one PG, SG, SF, PF, and C.");
                 return;
             }
@@ -109,17 +105,17 @@ public class StartingFivePanel extends JPanel implements ActionListener {
             orderedStartingFive.add(getSelectedPlayerByPosition("PF"));
             orderedStartingFive.add(getSelectedPlayerByPosition("C"));
 
-            selectedTeam.setStartingFive(orderedStartingFive);
+            selectedTeam.canSetStartingFive(orderedStartingFive);
 
             Team aiTeam = PlayerManager.getDefaultAITeam(selectedTeam.getTeamName());
-            aiTeam.setStartingFive(firstFive(aiTeam));
+            aiTeam.canSetStartingFive(firstFive(aiTeam));
 
             window.startGame(selectedTeam, aiTeam);
             return;
         }
 
-        updateCheckboxes();
-        startGameButton.setEnabled(validStartingFive());
+        updatecheckboxes();
+        startGameButton.setEnabled(startingFiveOK());
     }
     private Player getSelectedPlayerByPosition(String position) {
         for (Player p : selectedPlayers) {
@@ -129,16 +125,16 @@ public class StartingFivePanel extends JPanel implements ActionListener {
         }
         return null;
     }
-    private void updateCheckboxes() {
-        for (int i = 0; i < checkBoxes.size(); i++) {
-            JCheckBox box = checkBoxes.get(i);
-            Player player = selectedTeam.getRoster().get(i);
+    private void updatecheckboxes() {
+        for (int i = 0; i < checkboxes.size(); i++) {
+            JCheckBox box = checkboxes.get(i);
+            Player player = selectedTeam.getPlayers().get(i);
             String position = player.getPosition();
 
             if (box.isSelected()) {
                 box.setEnabled(true);
             } 
-            else if (selectedPositions.contains(position)) {
+            else if (positions.contains(position)) {
                 box.setEnabled(false);
             } 
             else {
@@ -149,8 +145,8 @@ public class StartingFivePanel extends JPanel implements ActionListener {
 
     private ArrayList<Player> firstFive(Team team) {
         ArrayList<Player> list = new ArrayList<Player>();
-        for (int i = 0; i < 5 && i < team.getRoster().size(); i++) {
-            list.add(team.getRoster().get(i));
+        for (int i = 0; i < 5 && i < team.getPlayers().size(); i++) {
+            list.add(team.getPlayers().get(i));
         }
         return list;
     }

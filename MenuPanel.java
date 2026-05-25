@@ -14,8 +14,8 @@ import javax.swing.JPanel;
  * Main welcome screen after the name screen.
  */
 public class MenuPanel extends JPanel implements ActionListener {
-    private JButton startButton;
-    private JButton tutorialButton;
+    private JButton start;
+    private JButton tutorial;
     private HoopDuels window;
 
     public MenuPanel(HoopDuels window, String userName) {
@@ -29,38 +29,32 @@ public class MenuPanel extends JPanel implements ActionListener {
         add(title, BorderLayout.NORTH);
 
         JPanel buttons = new JPanel(new GridLayout(2, 1, 20, 20));
-        buttons.setOpaque(false);
         buttons.setBorder(BorderFactory.createEmptyBorder(50, 390, 190, 390));
 
-        startButton = new JButton("Start");
-        startButton.setFont(new Font("Arial", Font.BOLD, 24));
-        startButton.addActionListener(this);
-        buttons.add(startButton);
+        start = new JButton("Start");
+        start.setFont(new Font("Arial", Font.BOLD, 24));
+        start.addActionListener(this);
+        buttons.add(start);
 
-        tutorialButton = new JButton("How To Play");
-        tutorialButton.setFont(new Font("Arial", Font.BOLD, 24));
-        tutorialButton.addActionListener(this);
-        buttons.add(tutorialButton);
+        tutorial = new JButton("How To Play");
+        tutorial.setFont(new Font("Arial", Font.BOLD, 24));
+        tutorial.addActionListener(this);
+        buttons.add(tutorial);
 
         add(buttons, BorderLayout.CENTER);
     }
 
     public void showTutorial() {
-        String rules = "HoopDuel Instructions:\n\n"
-            + "1. Choose your team and starting five.\n"
-            + "2. On offense, choose a play.\n"
-            + "3. Player circles and the ball will animate.\n"
-            + "4. The shot is calculated using player stats.\n"
-            + "5. On defense, choose a strategy to affect the AI shot.\n"
-            + "6. When time runs out, the higher score wins.\n"
-            + "7. If tied, sudden-death overtime starts.";
+        String rules = "HoopDuel Instructions:\n\n"+"1. Choose your team and starting five.\n"+"2. On offense, choose a play.\n"+"3. Players are represented by circles and the ball will move based on the play.\n"+"4. The shot is calculated using player stats.\n";
+        rules += "5. On defense, choose a strategy/modifier to affect the AI's shot.\n";
+        rules += "6. When time runs out, the player with higher score wins.\n";
+        rules += "7. If tied, there is a sudden death overtime.";
         JOptionPane.showMessageDialog(this, rules, "How To Play", JOptionPane.INFORMATION_MESSAGE);
     }
-
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == startButton) {
+        if (e.getSource() == start) {
             window.showTeamSelectionPanel();
-        } else if (e.getSource() == tutorialButton) {
+        } else if (e.getSource() == tutorial) {
             showTutorial();
         }
     }

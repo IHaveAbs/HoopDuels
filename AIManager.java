@@ -16,7 +16,18 @@ public class AIManager {
         team = t;
         playswhenlosing = new ArrayList<Play>(plays);
         queue = new LinkedList<Play>();
-        resetQueue();
+        
+        queue.clear();
+        if (playswhenlosing.size() >= 4) {
+            queue.add(playswhenlosing.get(0));
+            queue.add(playswhenlosing.get(2));
+            queue.add(playswhenlosing.get(1));
+            queue.add(playswhenlosing.get(3));
+        } else {
+            for (Play p : playswhenlosing) {
+                queue.add(p);
+            }
+        }
     }
     public Play choosePlay(int ai_score, int user_score, int timeleft) {
         if (!queue.isEmpty()) {
@@ -33,7 +44,7 @@ public class AIManager {
             }
         }
 
-        int randomplay = (int)((int)Math.random()*(int)playswhenlosing.size());
+        int randomplay = (int) (Math.random()*playswhenlosing.size());
         return playswhenlosing.get(randomplay);
     }
     public Player chooseShooter(Team t, Play play) {
@@ -46,20 +57,6 @@ public class AIManager {
         }
         return shooter;
     }
-    public void resetQueue() {
-        queue.clear();
-        if (playswhenlosing.size() >= 4) {
-            queue.add(playswhenlosing.get(0));
-            queue.add(playswhenlosing.get(2));
-            queue.add(playswhenlosing.get(1));
-            queue.add(playswhenlosing.get(3));
-        } else {
-            for (Play p : playswhenlosing) {
-                queue.add(p);
-            }
-        }
-    }
-
     public Team getTeam() {
         return team;
     }

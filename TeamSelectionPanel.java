@@ -52,7 +52,7 @@ public class TeamSelectionPanel extends JPanel implements ActionListener {
         return temp;
     }
     private void buildTeams() {
-        Team[] all = PlayerManager.getAllTeams();
+        Team[] all = PlayerManager.getTeams();
         for (Team t : all) {
             teams.put(t.getTeamName(), t);
         }

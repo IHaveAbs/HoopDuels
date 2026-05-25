@@ -2,20 +2,20 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 /**
- * Represents the basketball. It can follow a player, move during passes,
- * or move toward the hoop during shot animations.
+ * This is the ball class
+ * The ball class represents the ball and has fields for position, holder, etc.
  */
 public class Ball implements Drawable {
     private int x;
     private int y;
     private int targetX;
     private int targetY;
-    private Player currentHolder;
+    private Player holder;
     private Player lastPasser;
     private boolean moving;
 
-    private static final int SIZE = 16;
-    private static final int SPEED = 8;
+    private int diameter = 16;
+    private int SPEED = 8;
 
     public Ball(int x, int y) {
         this.x = x;
@@ -24,23 +24,23 @@ public class Ball implements Drawable {
         targetX = x;
         targetY = y;
         
-        this.currentHolder = null;
+        this.holder = null;
         this.lastPasser = null;
 
         moving = false;
     }
 
     public void draw(Graphics g) {
-        g.setColor(new Color(230, 115, 30));
-        g.fillOval(x - SIZE / 2, y - SIZE / 2, SIZE, SIZE);
+        g.setColor(new Color(233, 117, 31));
+        g.fillOval((int)x-diameter/2,(int)y-(diameter/2),diameter,diameter);
         g.setColor(Color.BLACK);
-        g.drawOval(x - SIZE / 2, y - SIZE / 2, SIZE, SIZE);
+        g.drawOval((int)x-diameter/2,(int)y-diameter/2,diameter,diameter);
     }
 
     public void moveTowardTarget() {
-        if (!moving && currentHolder != null) {
-            x = currentHolder.getX() + Player.SIZE / 2 - 2;
-            y = currentHolder.getY() - Player.SIZE / 2 + 6;
+        if (!moving && holder != null) {
+            x = (int)holder.getX()+Player.size/2-2;
+            y = (int)holder.getY()-Player.size/2+6;
             return;
         }
 
@@ -62,73 +62,60 @@ public class Ball implements Drawable {
     }
 
     public void setHolder(Player player) {
-        currentHolder = player;
+        holder = player;
         lastPasser = null;
         moving = false;
         if (player != null) {
-            x = player.getX() + Player.SIZE / 2 - 2;
-            y = player.getY() - Player.SIZE / 2 + 6;
+            x = player.getX() + Player.size / 2 - 2;
+            y = player.getY() - Player.size / 2 + 6;
             targetX = x;
             targetY = y;
         }
     }
 
     public void passTo(Player player) {
-        if (currentHolder != null && currentHolder != player) {
-            lastPasser = currentHolder;
+        if (holder != null && holder != player) {
+            lastPasser = holder;
         }
-        currentHolder = player;
+        holder = player;
         if (player != null) {
             // Aim at the player's target instead of only the current location.
             // This makes passes look cleaner when the receiver is cutting or rolling.
-            targetX = player.getTargetX() + Player.SIZE / 2 - 2;
-            targetY = player.getTargetY() - Player.SIZE / 2 + 6;
+            targetX = player.getTargetX() + Player.size / 2 - 2;
+            targetY = player.getTargetY() - Player.size / 2 + 6;
             moving = true;
         }
     }
 
-    public void shootToHoop(int hoopX, int hoopY) {
-        currentHolder = null;
-        targetX = hoopX;
-        targetY = hoopY;
+    public void shootToHoop(int x1, int y1) {
+        holder = null;
+        targetX = x1;
+        targetY = y1;
         moving = true;
     }
-
     public void setTarget(int x, int y) {
         targetX = x;
         targetY = y;
         moving = true;
     }
-
     public boolean isAtTarget() {
         return !moving && x == targetX && y == targetY;
     }
-
     public boolean isMoving() {
         return moving;
     }
-
-    public Player getCurrentHolder() {
-        return currentHolder;
+    public Player getHolder() {
+        return holder;
     }
-
-    /**
-     * Returns the last player who made a pass before the current shot.
-     * This is used so assists go to the actual passer instead of always
-     * going to the point guard.
-     */
     public Player getLastPasser() {
         return lastPasser;
     }
-
     public void clearLastPasser() {
         lastPasser = null;
     }
-
     public int getX() {
         return x;
     }
-
     public int getY() {
         return y;
     }

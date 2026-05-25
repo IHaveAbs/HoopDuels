@@ -26,10 +26,10 @@ public class Player implements Drawable {
     private Color color;
     private int moveSpeed;
 
-    public static final int SIZE = 46;
-    public static final int NORMAL_SPEED = 4;
-    public static final int SLOW_SPEED = 2;
-    public static final int SPRINT_SPEED = 8;
+    public static int size = 46;
+    public static int NORMAL_SPEED = 4;
+    public static int SLOW_SPEED = 2;
+    public static int SPRINT_SPEED = 8;
 
     /**
      * Creates a player with basic stats.
@@ -81,10 +81,10 @@ public class Player implements Drawable {
 
     public void draw(Graphics g) {
         g.setColor(color);
-        g.fillOval(x - SIZE / 2, y - SIZE / 2, SIZE, SIZE);
+        g.fillOval(x - size / 2, y - size / 2, size, size);
 
         g.setColor(Color.BLACK);
-        g.drawOval(x - SIZE / 2, y - SIZE / 2, SIZE, SIZE);
+        g.drawOval(x - size / 2, y - size / 2, size, size);
 
         String label = getInitials();
         FontMetrics fm = g.getFontMetrics();

@@ -1,14 +1,10 @@
 import java.awt.Color;
 
 /**
- * Builds teams with manually entered player data.
- * Stats are placeholder gameplay ratings, not official live NBA stats.
+ * Player data for all the teams.
+ * Stats are not official live NBA stats.
  */
 public class PlayerManager {
-    private PlayerManager() {
-        // Static factory class.
-    }
-
     public static Team buildWarriors() {
         Team t = new Team("Warriors");
         Color c = new Color(255, 210, 40);
@@ -25,7 +21,6 @@ public class PlayerManager {
         t.addPlayer(new Player("Seth Curry", "Warriors", "SG", 58, 50, 86, 65, c));
         return t;
     }
-
     public static Team buildLakers() {
         Team t = new Team("Lakers");
         Color c = new Color(185, 130, 255);
@@ -43,7 +38,6 @@ public class PlayerManager {
         t.addPlayer(new Player("Luke Kennard", "Lakers", "SG", 56, 50, 88, 64, c));
         return t;
     }
-
     public static Team buildCeltics() {
         Team t = new Team("Celtics");
         Color c = new Color(50, 190, 90);
@@ -60,7 +54,6 @@ public class PlayerManager {
         t.addPlayer(new Player("John Tonje", "Celtics", "SG", 64, 45, 78, 70, c));
         return t;
     }
-
     public static Team buildThunder() {
         Team t = new Team("Thunder");
         Color c = new Color(80, 170, 255);
@@ -78,13 +71,11 @@ public class PlayerManager {
         t.addPlayer(new Player("Jared McCain", "Thunder", "SG", 62, 48, 82, 68, c));
         return t;
     }
-
-    public static Team[] getAllTeams() {
+    public static Team[] getTeams() {
         return new Team[] { buildWarriors(), buildLakers(), buildCeltics(), buildThunder() };
     }
-
     public static Team getDefaultAITeam(String userTeamName) {
-        Team[] teams = getAllTeams();
+        Team[] teams = getTeams();
         for (Team t : teams) {
             if (!t.getTeamName().equals(userTeamName)) {
                 return t;

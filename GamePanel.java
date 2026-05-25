@@ -205,14 +205,14 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void updateGame() {
         updateClock();
-        animation.tick();
+        animation.moveOnce();
 
         if (state.equals("AI_TRANSITION")) {
-            if (allPlayersAtTarget() && !ball.isMoving()) {
+            if (isAllPlayersAtTarget() && !ball.isMoving()) {
                 beginPlayAnimation(false);
             }
         } else if (state.equals("USER_TRANSITION")) {
-            if (allPlayersAtTarget() && !ball.isMoving()) {
+            if (isAllPlayersAtTarget() && !ball.isMoving()) {
                 for (Player p : allCourtPlayers) {
                     p.resetMoveSpeed();
                 }
@@ -222,7 +222,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 buttons.showDefenseButtons(false);
             }
         } else if (state.equals("USER_ANIMATING") || state.equals("AI_ANIMATING")) {
-            if (allPlayersAtTarget() && !ball.isMoving()) {
+            if (isAllPlayersAtTarget() && !ball.isMoving()) {
                 if (currentPlayStage < totalPlayStages - 1) {
                     currentPlayStage++;
                     applyCurrentPlayStage();
@@ -537,15 +537,15 @@ public class GamePanel extends JPanel implements ActionListener {
 
         // Use the player who actually has the ball at the end of the animation.
         // This fixes the old bug where the log could say the passer scored.
-        Player ballHolder = ball.getCurrentHolder();
+        Player ballHolder = ball.getHolder();
         if (ballHolder != null) {
             activeShooter = ballHolder;
         }
 
-        boolean made = ShotCalculator.shotMade(activeShooter, activeShotType, modifier);
+        boolean made = ShotCalculator.checkIfShotGoesIn(activeShooter, activeShotType, modifier);
         int points = ShotCalculator.getPointValue(activeShotType);
         activeShooter.recordShot(made);
-        scoringTeam.addShotAttempt(made);
+        scoringTeam.addShot(made);
 
         if (made) {
             scoringTeam.addScore(points);
@@ -630,7 +630,7 @@ public class GamePanel extends JPanel implements ActionListener {
         window.showPostGamePanel(userTeam, aiTeam);
     }
     
-    private boolean allPlayersAtTarget() {
+    private boolean isAllPlayersAtTarget() {
         for (Player p : allCourtPlayers) {
             if (!p.isAtTarget()) {
                 return false;

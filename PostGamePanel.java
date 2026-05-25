@@ -17,82 +17,72 @@ import javax.swing.JTable;
 public class PostGamePanel extends JPanel implements ActionListener {
     private Team userTeam;
     private Team aiTeam;
-    private JButton restartButton;
+    private JButton restartGame;
     private JButton exitButton;
     private HoopDuels window;
 
-    public PostGamePanel(HoopDuels window, Team userTeam, Team aiTeam) {
-        this.window = window;
-        this.userTeam = userTeam;
-        this.aiTeam = aiTeam;
+    public PostGamePanel(HoopDuels w, Team u, Team a) {
+        window = w;
+        userTeam = u;
+        aiTeam = a;
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
+
         displayResults();
     }
-
     public void displayResults() {
         String winner;
         if (userTeam.getScore() > aiTeam.getScore()) {
-            winner = userTeam.getTeamName() + " win!";
+            winner = userTeam.getTeamName() + " has won!";
         } else if (aiTeam.getScore() > userTeam.getScore()) {
-            winner = aiTeam.getTeamName() + " win!";
+            winner = aiTeam.getTeamName() + " has won!";
         } else {
-            winner = "Game tied";
+            winner = "The Game is tied";
         }
 
-        JLabel title = new JLabel("Final: " + userTeam.getTeamName() + " " + userTeam.getScore()
-            + " - " + aiTeam.getScore() + " " + aiTeam.getTeamName() + "   |   " + winner,
-            JLabel.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 24));
+        JLabel title = new JLabel("Final: "+userTeam.getTeamName()+" "+userTeam.getScore()+" - "+aiTeam.getScore()+" "+aiTeam.getTeamName()+"  |  "+winner,JLabel.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 23));
         title.setBorder(BorderFactory.createEmptyBorder(25, 0, 15, 0));
         add(title, BorderLayout.NORTH);
 
         String[] columns = {"Team", "Player", "PTS", "REB", "AST", "FG"};
-        Object[][] rows = buildRows();
+
+
+
+        int size = userTeam.getStartingFive().size() + aiTeam.getStartingFive().size();
+        Object[][] rows = new Object[size][6];
+        int row = 0;
+        for (Player p : userTeam.getStartingFive()) {
+            rows[row++] = playerData(userTeam, p);
+        }
+        for (Player p : aiTeam.getStartingFive()) {
+            rows[row++] = playerData(aiTeam, p);
+        }
+
+
         JTable table = new JTable(rows, columns);
-        table.setFont(new Font("Arial", Font.PLAIN, 14));
-        table.setRowHeight(24);
+        table.setFont(new Font("Arial", Font.PLAIN, 13));
+        table.setRowHeight(23);
         add(new JScrollPane(table), BorderLayout.CENTER);
 
         JPanel buttons = new JPanel(new GridLayout(1, 2, 25, 0));
         buttons.setBorder(BorderFactory.createEmptyBorder(20, 350, 25, 350));
         buttons.setOpaque(false);
-        restartButton = new JButton("Play Again");
-        restartButton.addActionListener(this);
+        restartGame = new JButton("Play Again");
+        restartGame.addActionListener(this);
         exitButton = new JButton("Exit");
         exitButton.addActionListener(this);
-        buttons.add(restartButton);
+        buttons.add(restartGame);
         buttons.add(exitButton);
         add(buttons, BorderLayout.SOUTH);
     }
-
-    private Object[][] buildRows() {
-        int size = userTeam.getStartingFive().size() + aiTeam.getStartingFive().size();
-        Object[][] rows = new Object[size][6];
-        int row = 0;
-        for (Player p : userTeam.getStartingFive()) {
-            rows[row++] = playerRow(userTeam, p);
-        }
-        for (Player p : aiTeam.getStartingFive()) {
-            rows[row++] = playerRow(aiTeam, p);
-        }
-        return rows;
+    private Object[] playerData(Team team, Player p) {
+        Object[] temp = new Object[] {team.getTeamName(), p.getName(), p.getPoints(), p.getRebounds(), p.getAssists(), p.getFieldGoalsMade() + "/" + p.getFieldGoalsAttempted()};
+        return temp;
     }
-
-    private Object[] playerRow(Team team, Player p) {
-        return new Object[] {
-            team.getTeamName(),
-            p.getName(),
-            p.getPoints(),
-            p.getRebounds(),
-            p.getAssists(),
-            p.getFieldGoalsMade() + "/" + p.getFieldGoalsAttempted()
-        };
-    }
-
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == restartButton) {
+        if (e.getSource() == restartGame) {
             window.restartFromTeamSelection();
         } else if (e.getSource() == exitButton) {
             System.exit(0);
