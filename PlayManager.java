@@ -240,7 +240,7 @@ public class PlayManager {
         if (attackingRight) {
             return x;
         }
-        return GamePanel.COURT_X + GamePanel.COURT_W - (x - GamePanel.COURT_X);
+        return GamePanel.courtX + GamePanel.courtW - (x - GamePanel.courtX);
     }
 
     public Player chooseShooter(Play play, Team offense) {

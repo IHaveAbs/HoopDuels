@@ -3,10 +3,10 @@ import java.awt.Graphics;
 
 public class Court {
     public void drawCourt(Graphics g) {
-        int courtX = GamePanel.COURT_X;
-        int courtY = GamePanel.COURT_Y;
-        int courtW = GamePanel.COURT_W;
-        int courtH = GamePanel.COURT_H;
+        int courtX = GamePanel.courtX;
+        int courtY = GamePanel.courtY;
+        int courtW = GamePanel.courtW;
+        int courtH = GamePanel.courtH;
 
         int hoopY = courtY + courtH / 2;
         int leftHoopX = courtX + 35;
