@@ -1,3 +1,5 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -19,7 +21,11 @@ public class Button {
             Play play = plays.get(i);
             JButton button = new JButton(play.getName());
             button.setBounds(startX, startY + i * 45, 250, 35);
-            button.addActionListener(e -> gamePanel.runUserPossession(play.getName()));
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    gamePanel.runUserPossession(play.getName());
+                }
+            });
             playB.add(button);
             panel.add(button);
         }
@@ -33,7 +39,11 @@ public class Button {
             String defense = defenses.get(i);
             JButton button = new JButton(defense);
             button.setBounds(startX, startY + i * 45, 250, 35);
-            button.addActionListener(e -> gamePanel.runAIPossession(defense));
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    gamePanel.runAIPossession(defense);
+                }
+            });
             defenseB.add(button);
             panel.add(button);
         }
