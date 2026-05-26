@@ -121,10 +121,6 @@ public class PlayManager {
     }
 
     private void moveBallForStage(Play play, Team offense, Ball ball, int stage) {
-        if (ball == null) {
-            return;
-        }
-
         Player pg = getBallHandler(offense);
         Player sg = offense.getPlayerByPosition("SG");
         Player sf = offense.getPlayerByPosition("SF");
@@ -244,9 +240,6 @@ public class PlayManager {
     }
 
     public Player chooseShooter(Play play, Team offense) {
-        if (play == null || offense == null) {
-            return null;
-        }
         Player shooter = offense.getPlayerByPosition(play.getShooterPosition());
         if (shooter == null) {
             shooter = offense.getBestShooter(play.getShot());

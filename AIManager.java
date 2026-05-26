@@ -48,9 +48,6 @@ public class AIManager {
         return playswhenlosing.get(randomplay);
     }
     public Player chooseShooter(Team t, Play play) {
-        if (t == null || play == null) {
-            return null;
-        }
         Player shooter = t.getPlayerByPosition(play.getShooterPosition());
         if (shooter == null) {
             shooter = t.getBestShooter(play.getShot());
