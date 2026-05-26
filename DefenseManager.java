@@ -10,18 +10,16 @@ public class DefenseManager {
     public DefenseManager() {
         defensiveOptions = new ArrayList<String>();
         defensiveOptions.add("Man-to-Man");
-        defensiveOptions.add("Zone Defense (2-3)");
+        defensiveOptions.add("Zone Defense");
         defensiveOptions.add("Protect Paint");
         defensiveOptions.add("Guard Perimeter");
         selectedDefense = "Man-to-Man";
     }
-
     public void setDefense(String defenseName) {
         if (defensiveOptions.contains(defenseName)) {
             selectedDefense = defenseName;
         }
     }
-
     /**
      * Returns a percentage-point modifier for the AI shot chance.
      * Negative values make it harder for the AI to score.
@@ -30,7 +28,7 @@ public class DefenseManager {
         if (selectedDefense.equals("Man-to-Man")) {
             return 0;
         }
-        if (selectedDefense.equals("Zone Defense (2-3)")) {
+        if (selectedDefense.equals("Zone Defense")) {
             if (shotType.equals("rim")) {
                 return -10;
             }
@@ -68,9 +66,5 @@ public class DefenseManager {
 
     public ArrayList<String> getDefensiveOptions() {
         return defensiveOptions;
-    }
-
-    public String getSelectedDefense() {
-        return selectedDefense;
     }
 }

@@ -10,12 +10,12 @@ public class Ball implements Drawable {
     private int y;
     private int targetX;
     private int targetY;
+    private int diameter = 16;
+    private int ballspeed = 8;
     private Player holder;
     private Player lastPasser;
     private boolean moving;
 
-    private int diameter = 16;
-    private int SPEED = 8;
 
     public Ball(int x, int y) {
         this.x = x;
@@ -53,10 +53,10 @@ public class Ball implements Drawable {
 
     private int moveOneAxis(int current, int target) {
         if (current < target) {
-            return Math.min(current + SPEED, target);
+            return Math.min(current + ballspeed, target);
         }
         if (current > target) {
-            return Math.max(current - SPEED, target);
+            return Math.max(current - ballspeed, target);
         }
         return current;
     }
@@ -99,7 +99,7 @@ public class Ball implements Drawable {
         moving = true;
     }
     public boolean isAtTarget() {
-        return !moving && x == targetX && y == targetY;
+        return (!moving) && (x == targetX) && (y == targetY);
     }
     public boolean isMoving() {
         return moving;

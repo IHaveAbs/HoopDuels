@@ -1,12 +1,16 @@
 public class Game {
     private boolean userTurn;
     private boolean animationRunning;
-    private boolean overtime;
+    private boolean isovertime;
     private boolean gameOver;
     private String currentMessage;
 
     public Game() {
-        reset();
+        userTurn = true;
+        animationRunning = false;
+        isovertime = false;
+        gameOver = false;
+        currentMessage = "";
     }
     public boolean isUserTurn() {
         return userTurn;
@@ -14,8 +18,8 @@ public class Game {
     public boolean isAnimationRunning(){
         return animationRunning;
     }
-    public boolean isOverTime() {
-        return overtime;
+    public boolean isisovertime() {
+        return isovertime;
     }
         public boolean isGameOver() {
         return gameOver;
@@ -25,16 +29,15 @@ public class Game {
         return currentMessage;
     }
 
-    public void setUserTurn(boolean userTurn) {
-        this.userTurn = userTurn;
+    public void setUserTurn(boolean u) {
+        userTurn = u;
     }
-
     public void setAnimationRunning(boolean animationRunning) {
         this.animationRunning = animationRunning;
     }
 
-    public void setOvertime(boolean overtime) {
-        this.overtime = overtime;
+    public void setisovertime(boolean isovertime) {
+        this.isovertime = isovertime;
     }
 
     public void setGameOver(boolean gameOver) {
@@ -43,14 +46,6 @@ public class Game {
 
     public void setCurrentMessage(String currentMessage) {
         this.currentMessage = currentMessage;
-    }
-
-    public void reset() {
-        userTurn = true;
-        animationRunning = false;
-        overtime = false;
-        gameOver = false;
-        currentMessage = "";
     }
 }
 

@@ -83,39 +83,39 @@ public class PlayManager {
         // then the ball handler bursts around it.
         if (play.getName().equals("Pick and Roll")) {
             if (stage == 0) {
-                c.setMoveSpeed(Player.SLOW_SPEED);
+                c.setMoveSpeed(Player.slowSpeed);
             }
             if (stage == 1) {
-                pg.setMoveSpeed(Player.SPRINT_SPEED);
-                c.setMoveSpeed(Player.SLOW_SPEED);
+                pg.setMoveSpeed(Player.fastSpeed);
+                c.setMoveSpeed(Player.slowSpeed);
             }
             if (stage == 2) {
-                c.setMoveSpeed(Player.SPRINT_SPEED);
+                c.setMoveSpeed(Player.fastSpeed);
             }
         }
         if (play.getName().equals("Isolation Drive")) {
             if (stage == 0) {
-                sg.setMoveSpeed(Player.SPRINT_SPEED);
-                pf.setMoveSpeed(Player.SPRINT_SPEED);
+                sg.setMoveSpeed(Player.fastSpeed);
+                pf.setMoveSpeed(Player.fastSpeed);
             }
             if (stage >= 1) {
-                sf.setMoveSpeed(Player.SPRINT_SPEED);
+                sf.setMoveSpeed(Player.fastSpeed);
             }
         }
         if (play.getName().equals("Kick-Out Three")) {
             if (stage == 1) {
-                pg.setMoveSpeed(Player.SPRINT_SPEED);
+                pg.setMoveSpeed(Player.fastSpeed);
             }
             if (stage == 2) {
-                sg.setMoveSpeed(Player.SPRINT_SPEED);
+                sg.setMoveSpeed(Player.fastSpeed);
             }
         }
         if (play.getName().equals("Post Up")) {
             if (stage == 0 || stage == 1) {
-                c.setMoveSpeed(Player.SLOW_SPEED);
+                c.setMoveSpeed(Player.slowSpeed);
             }
             if (stage == 2) {
-                c.setMoveSpeed(Player.SPRINT_SPEED);
+                c.setMoveSpeed(Player.fastSpeed);
             }
         }
     }
@@ -305,15 +305,14 @@ public class PlayManager {
             list.add(player);
         }
     }
-
-    private Player getByRoleList(ArrayList<Player> players, String position, int backupIndex) {
+    private Player getByRoleList(ArrayList<Player> players, String position, int defaultplayer) {
         for (Player p : players) {
             if (p.getPosition().equals(position)) {
                 return p;
             }
         }
-        if (players.size() > backupIndex) {
-            return players.get(backupIndex);
+        if (players.size() > defaultplayer) {
+            return players.get(defaultplayer);
         }
         if (players.size() > 0) {
             return players.get(0);

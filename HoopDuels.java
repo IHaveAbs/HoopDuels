@@ -1,7 +1,6 @@
 import java.awt.CardLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 /**
  * This is the HoopDuel class
@@ -9,101 +8,60 @@ import javax.swing.SwingUtilities;
  */
 public class HoopDuels {
     private JFrame frame;
-    private JPanel cards;
+    private JPanel panels;
     private CardLayout cardLayout;
-    private String userName;
-    private Team userTeam;
-    private Team aiTeam;
+    private String username;
 
     public HoopDuels() {
-        frame = new JFrame("HoopDuel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame = new JFrame("HoopDuels");
         frame.setSize(1100, 720);
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
 
         cardLayout = new CardLayout();
-        cards = new JPanel(cardLayout);
-        frame.setContentPane(cards);
+        panels = new JPanel(cardLayout);
+        frame.setContentPane(panels);
 
         showNamePanel();
         frame.setVisible(true);
     }
 
     public void showNamePanel() {
-        cards.add(new NamePanel(this), "NamePanel");
-        cardLayout.show(cards, "NamePanel");
+        panels.add(new NamePanel(this), "NamePanel");
+        cardLayout.show(panels, "NamePanel");
     }
 
     public void showMenuPanel() {
-        cards.add(new MenuPanel(this, userName), "MenuPanel");
-        cardLayout.show(cards, "MenuPanel");
+        panels.add(new MenuPanel(this, username), "MenuPanel");
+        cardLayout.show(panels, "MenuPanel");
     }
 
     public void showTeamSelectionPanel() {
-        cards.add(new TeamSelectionPanel(this, userName), "TeamSelectionPanel");
-        cardLayout.show(cards, "TeamSelectionPanel");
+        panels.add(new TeamSelectionPanel(this, username), "TeamSelectionPanel");
+        cardLayout.show(panels, "TeamSelectionPanel");
     }
 
     public void showStartingFivePanel(Team team) {
-        this.userTeam = team;
-        cards.add(new StartingFivePanel(this, team), "StartingFivePanel");
-        cardLayout.show(cards, "StartingFivePanel");
+        panels.add(new StartingFivePanel(this, team), "StartingFivePanel");
+        cardLayout.show(panels, "StartingFivePanel");
     }
 
     public void startGame(Team userTeam, Team aiTeam) {
-        this.userTeam = userTeam;
-        this.aiTeam = aiTeam;
-        GamePanel panel = new GamePanel(this, userName, userTeam, aiTeam);
-        cards.add(panel, "GamePanel");
-        cardLayout.show(cards, "GamePanel");
+        GamePanel panel = new GamePanel(this, username, userTeam, aiTeam);
+        panels.add(panel, "GamePanel");
+        cardLayout.show(panels, "GamePanel");
         panel.requestFocusInWindow();
     }
-
     public void showPostGamePanel(Team user, Team ai) {
         PostGamePanel panel = new PostGamePanel(this, user, ai);
-        cards.add(panel, "PostGamePanel");
-        cardLayout.show(cards, "PostGamePanel");
+        panels.add(panel, "PostGamePanel");
+        cardLayout.show(panels, "PostGamePanel");
     }
-
     public void restartFromTeamSelection() {
-        userTeam = null;
-        aiTeam = null;
         showTeamSelectionPanel();
     }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String u) {
+        username = u;
     }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public JFrame getFrame() {
-        return frame;
-    }
-
-    public void resetGame() {
-        if (userTeam != null) {
-            userTeam.resetGameStats();
-        }
-        if (aiTeam != null) {
-            aiTeam.resetGameStats();
-        }
-
-        userName = null;
-        userTeam = null;
-        aiTeam = null;
-
-        showNamePanel();
-    }
-    
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new HoopDuels();
-            }
-        });
+        new HoopDuels();
     }
 }

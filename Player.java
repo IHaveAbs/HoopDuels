@@ -25,11 +25,10 @@ public class Player implements Drawable {
     private int fieldGoalsAttempted;
     private Color color;
     private int moveSpeed;
-
     public static int size = 46;
-    public static int NORMAL_SPEED = 4;
-    public static int SLOW_SPEED = 2;
-    public static int SPRINT_SPEED = 8;
+    public static int normalSpeed = 4;
+    public static int slowSpeed = 2;
+    public static int fastSpeed = 8;
 
     /**
      * Creates a player with basic stats.
@@ -39,10 +38,10 @@ public class Player implements Drawable {
         this.name = name;
         this.teamName = teamName;
         this.position = position;
-        this.x = 0;
-        this.y = 0;
-        this.targetX = 0;
-        this.targetY = 0;
+        x = 0;
+        y = 0;
+        targetX = 0;
+        targetY = 0;
         this.shootingStats = new HashMap<String, Integer>();
         shootingStats.put("rim", rimFG);
         shootingStats.put("mid", midFG);
@@ -54,7 +53,7 @@ public class Player implements Drawable {
         this.fieldGoalsMade = 0;
         this.fieldGoalsAttempted = 0;
         this.color = color;
-        this.moveSpeed = NORMAL_SPEED;
+        this.moveSpeed = normalSpeed;
     }
 
     /**
@@ -76,21 +75,19 @@ public class Player implements Drawable {
         this.fieldGoalsMade = 0;
         this.fieldGoalsAttempted = 0;
         this.color = other.color;
-        this.moveSpeed = NORMAL_SPEED;
+        this.moveSpeed = normalSpeed;
     }
 
     public void draw(Graphics g) {
         g.setColor(color);
-        g.fillOval(x - size / 2, y - size / 2, size, size);
+        g.fillOval(x-size/2, y-size/2, size, size);
 
         g.setColor(Color.BLACK);
-        g.drawOval(x - size / 2, y - size / 2, size, size);
+        g.drawOval(x-size/2,y-size/2, size, size);
 
         String label = getInitials();
-        FontMetrics fm = g.getFontMetrics();
-        int textWidth = fm.stringWidth(label);
-        int textHeight = fm.getAscent();
-        g.drawString(label, x - textWidth / 2, y + textHeight / 3);
+        FontMetrics temp = g.getFontMetrics();
+        g.drawString(label, x-temp.stringWidth(label)/2, y+temp.getAscent()/3);
     }
 
     /**
@@ -112,31 +109,31 @@ public class Player implements Drawable {
     }
 
     public boolean isAtTarget() {
-        return x == targetX && y == targetY;
+        return (x == targetX && y == targetY);
     }
 
     public void setTarget(int x, int y) {
-        this.targetX = x;
-        this.targetY = y;
+        targetX = x;
+        targetY = y;
     }
 
     public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
-        this.targetX = x;
-        this.targetY = y;
+        targetX = x;
+        targetY = y;
     }
 
     public void setMoveSpeed(int moveSpeed) {
         if (moveSpeed <= 0) {
-            this.moveSpeed = NORMAL_SPEED;
+            this.moveSpeed = normalSpeed;
         } else {
             this.moveSpeed = moveSpeed;
         }
     }
 
     public void resetMoveSpeed() {
-        moveSpeed = NORMAL_SPEED;
+        moveSpeed = normalSpeed;
     }
 
     public void addPoints(int points) {
@@ -159,15 +156,6 @@ public class Player implements Drawable {
             fieldGoalsMade++;
         }
     }
-
-    public void resetStats() {
-        points = 0;
-        rebounds = 0;
-        assists = 0;
-        fieldGoalsMade = 0;
-        fieldGoalsAttempted = 0;
-    }
-
     public int getShotChance(String shotType) {
         Integer chance = shootingStats.get(shotType);
         if (chance == null) {
@@ -175,77 +163,54 @@ public class Player implements Drawable {
         }
         return chance;
     }
-
-    public double distanceFrom(int otherX, int otherY) {
-        int dx = x - otherX;
-        int dy = y - otherY;
-        return Math.sqrt(dx * dx + dy * dy);
-    }
-
     private String getInitials() {
-        String[] parts = name.split(" ");
+        String[] temp = name.split(" ");
         String initials = "";
-        for (int i = 0; i < parts.length && i < 2; i++) {
-            if (parts[i].length() > 0) {
-                initials += parts[i].substring(0, 1).toUpperCase();
+        for (int i = 0; i < temp.length && i < 2; i++) {
+            if (temp[i].length() > 0) {
+                String temp1 = temp[i].substring(0, 1).toUpperCase();
+                initials += temp1;
             }
         }
         return initials;
     }
-
     public String getName() {
         return name;
     }
-
     public String getTeamName() {
         return teamName;
     }
-
     public String getPosition() {
         return position;
     }
-
     public int getDefenseRating() {
         return defenseRating;
     }
-
     public int getPoints() {
         return points;
     }
-
     public int getRebounds() {
         return rebounds;
     }
-
     public int getAssists() {
         return assists;
     }
-
     public int getFieldGoalsMade() {
         return fieldGoalsMade;
     }
-
     public int getFieldGoalsAttempted() {
         return fieldGoalsAttempted;
     }
-
     public int getX() {
         return x;
     }
-
     public int getY() {
         return y;
     }
-
     public int getTargetX() {
         return targetX;
     }
-
     public int getTargetY() {
         return targetY;
-    }
-
-    public Color getColor() {
-        return color;
     }
 }

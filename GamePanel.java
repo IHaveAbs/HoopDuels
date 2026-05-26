@@ -137,14 +137,14 @@ public class GamePanel extends JPanel implements ActionListener {
     private void setTransitionTargetsForAIOffense() {
         // This fixes the old issue: the user team must sprint back to the left side
         // because the AI attacks the left hoop after the user's possession ends.
-        setTargetsFromArray(userTeam, getUserBasePositions(), Player.SPRINT_SPEED);
-        setTargetsFromArray(aiTeam, getAIBasePositions(), Player.SPRINT_SPEED);
+        setTargetsFromArray(userTeam, getUserBasePositions(), Player.fastSpeed);
+        setTargetsFromArray(aiTeam, getAIBasePositions(), Player.fastSpeed);
         ball.setHolder(playManager.getBallHandler(aiTeam));
     }
 
     private void setTransitionTargetsForUserOffense() {
-        setTargetsFromArray(userTeam, getUserBasePositions(), Player.SPRINT_SPEED);
-        setTargetsFromArray(aiTeam, getAIBasePositions(), Player.SPRINT_SPEED);
+        setTargetsFromArray(userTeam, getUserBasePositions(), Player.fastSpeed);
+        setTargetsFromArray(aiTeam, getAIBasePositions(), Player.fastSpeed);
         ball.setHolder(playManager.getBallHandler(userTeam));
     }
 
@@ -421,7 +421,7 @@ public class GamePanel extends JPanel implements ActionListener {
             int tx = offensivePlayer.getTargetX() + offset;
             int ty = offensivePlayer.getTargetY();
             defender.setTarget(clampX(tx), clampY(ty));
-            defender.setMoveSpeed(Player.NORMAL_SPEED);
+            defender.setMoveSpeed(Player.normalSpeed);
         }
     }
 
@@ -432,9 +432,9 @@ public class GamePanel extends JPanel implements ActionListener {
     private void setSchemeDefense(Team defense, Team offense, boolean offenseAttackingRight, String scheme, int stage) {
         ArrayList<Player> defenders = defense.getStartingFive();
         ArrayList<Player> offensivePlayers = offense.getStartingFive();
-        int speed = stage == 0 ? Player.SPRINT_SPEED : Player.NORMAL_SPEED;
+        int speed = stage == 0 ? Player.fastSpeed : Player.normalSpeed;
 
-        if (scheme.equals("Zone Defense (2-3)")) {
+        if (scheme.equals("Zone Defense")) {
             // A 2-3 zone should look like two guards up top and three players across
             // the back line. It should not look like five random man-to-man matchups.
             // When the offense drives/post-ups, the zone collapses toward the key.

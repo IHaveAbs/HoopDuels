@@ -65,7 +65,7 @@ public class NamePanel extends JPanel implements ActionListener {
             JOptionPane.showMessageDialog(this, "Please enter your name first.");
             return;
         }
-        window.setUserName(name);
+        window.setUsername(name);
         window.showMenuPanel();
     }
 }

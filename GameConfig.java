@@ -44,9 +44,9 @@ public final class GameConfig {
 
     // ===== 4. Player and Ball =====
     public static final int PLAYER_SIZE         = 46;
-    public static final int PLAYER_NORMAL_SPEED = 4;
-    public static final int PLAYER_SLOW_SPEED   = 2;
-    public static final int PLAYER_SPRINT_SPEED = 8;
+    public static final int PLAYER_normalSpeed = 4;
+    public static final int PLAYER_slowSpeed   = 2;
+    public static final int PLAYER_fastSpeed = 8;
 
     public static final int BALL_SIZE  = 16;
     public static final int BALL_SPEED = 8;

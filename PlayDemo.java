@@ -126,7 +126,7 @@ public class PlayDemo extends JFrame {
 
     private void buildViews() {
         String[] plays    = { "Pick and Roll", "Isolation Drive", "Kick-Out Three", "Post Up" };
-        String[] defenses = { "Man-to-Man", "Zone Defense (2-3)", "Protect Paint", "Guard Perimeter" };
+        String[] defenses = { "Man-to-Man", "Zone Defense", "Protect Paint", "Guard Perimeter" };
         for (String play : plays) {
             for (String def : defenses) {
                 int[][] prevOff = GameConfig.USER_BASE_POSITIONS;
@@ -206,7 +206,7 @@ public class PlayDemo extends JFrame {
 
     private static int[][] computeDefense(String scheme, int[][] offTargets, int stage, String play) {
         if (scheme.equals("Man-to-Man"))         return manDefense(offTargets);
-        if (scheme.equals("Zone Defense (2-3)")) return zoneDefense(stage, play);
+        if (scheme.equals("Zone Defense")) return zoneDefense(stage, play);
         if (scheme.equals("Protect Paint"))      return paintDefense(offTargets);
         if (scheme.equals("Guard Perimeter"))    return perimeterDefense(offTargets);
         return manDefense(offTargets);

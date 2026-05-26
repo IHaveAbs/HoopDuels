@@ -50,14 +50,6 @@ public class Team {
             FGScores++;
         }
     }
-    public void resetGameStats() {
-        score = 0;
-        FGScores = 0;
-        totalFGAttempted = 0;
-        for (Player p : players) {
-            p.resetStats();
-        }
-    }
     public int getScore() {
         return score;
     }
