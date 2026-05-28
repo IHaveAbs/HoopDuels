@@ -24,7 +24,11 @@ public class StartingFivePanel extends JPanel implements ActionListener {
     private HoopDuels window;
     private ArrayList<JCheckBox> checkboxes;
     private HashSet<String> positions;
-
+    /**
+     * Constructs StartingFivePanel with HoopDuel window and the Team
+     * @param w the window
+     * @param s the team
+     */
     public StartingFivePanel(HoopDuels w, Team s) {
         window = w;
         selectedTeam = s;
@@ -42,6 +46,10 @@ public class StartingFivePanel extends JPanel implements ActionListener {
 
         displayRoster(selectedTeam);
     }
+    /**
+     * displays the possible starting five players using checkmarks
+     * @param team the team
+     */
     public void displayRoster(Team team) {
         JPanel roster = new JPanel(new GridLayout(0, 2, 13, 13));
         Border temp = BorderFactory.createEmptyBorder(20, 165, 20, 165);
@@ -67,6 +75,10 @@ public class StartingFivePanel extends JPanel implements ActionListener {
         south.add(startGameButton);
         add(south, BorderLayout.SOUTH);
     }
+    /**
+     * checks if the starting five is ok as you need to contain all the positions
+     * @return if the starting five is ok
+     */
     public boolean startingFiveOK() {
         if (selectedPlayers.size() == 5 && positions.contains("PG") && positions.contains("SG") && positions.contains("SF") && positions.contains("PF") && positions.contains("C")) {
             return true;
@@ -74,11 +86,16 @@ public class StartingFivePanel extends JPanel implements ActionListener {
         return false;
         
     }
-
+    /**
+     * 
+     * @return the starting five
+     */
     public ArrayList<Player> getStartingFive() {
         return selectedPlayers;
     }
-
+    /**
+     * Onclick checks for the buttons
+     */
     public void actionPerformed(ActionEvent e) {
         selectedPlayers.clear();
         positions.clear();
@@ -117,6 +134,11 @@ public class StartingFivePanel extends JPanel implements ActionListener {
         updatecheckboxes();
         startGameButton.setEnabled(startingFiveOK());
     }
+    /**
+     * Gets the player by position
+     * @param position the position
+     * @return the player
+     */
     private Player getSelectedPlayerByPosition(String position) {
         for (Player p : selectedPlayers) {
             if (p.getPosition().equals(position)) {
@@ -125,6 +147,9 @@ public class StartingFivePanel extends JPanel implements ActionListener {
         }
         return null;
     }
+    /**
+     * updates the checkboxes
+     */
     private void updatecheckboxes() {
         for (int i = 0; i < checkboxes.size(); i++) {
             JCheckBox box = checkboxes.get(i);
@@ -142,12 +167,16 @@ public class StartingFivePanel extends JPanel implements ActionListener {
             }
         }
     }
-
+    /**
+     * adds the first five to a list and then returns that
+     * @param team
+     * @return the final list
+     */
     private ArrayList<Player> firstFive(Team team) {
-        ArrayList<Player> list = new ArrayList<Player>();
+        ArrayList<Player> temp = new ArrayList<Player>();
         for (int i = 0; i < 5 && i < team.getPlayers().size(); i++) {
-            list.add(team.getPlayers().get(i));
+            temp.add(team.getPlayers().get(i));
         }
-        return list;
+        return temp;
     }
 }

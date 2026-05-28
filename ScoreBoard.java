@@ -10,26 +10,34 @@ public class ScoreBoard implements Drawable {
     private int timeLeft;
     private Team user;
     private Team ai;
-
+    /**
+     * Constructs the scoreboard using user's team, ai's team and time left
+     * @param user user's team
+     * @param ai ai's team
+     * @param timeLeft the time left
+     */
     public ScoreBoard(Team user, Team ai, int timeLeft) {
         this.user = user;
         this.ai = ai;
         this.timeLeft = timeLeft;
         possessionNumber = 1;
     }
+    /**
+     * 
+     */
     public void draw(Graphics g) {
-        draw(g, user, ai);
-    }
-    public void draw(Graphics g, Team u, Team a) {
         g.setColor(new Color(30, 30, 30));
         g.fillRoundRect(30, 15, 730, 70, 15, 15);
         g.setColor(Color.WHITE);
         g.setFont(new Font("Arial", Font.BOLD, 18));
-        g.drawString(u.getTeamName() + ": " + u.getScore(), 55, 42);
-        g.drawString("AI " + a.getTeamName() + ": " + a.getScore(), 250, 42);
+        g.drawString(user.getTeamName() + ": " + user.getScore(), 55, 42);
+        g.drawString("AI " + ai.getTeamName() + ": " + ai.getScore(), 250, 42);
         g.drawString("Clock: " + getClockDisplay(), 480, 42);
         g.drawString("Possession: " + possessionNumber, 620, 42);
         g.setFont(new Font("Arial", Font.PLAIN, 13));
+    }
+    public void draw(Graphics g, Team u, Team a) {
+        
     }
     public void updateScore(Team team, int points) {
         team.addScore(points);

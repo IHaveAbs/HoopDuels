@@ -21,7 +21,11 @@ public class TeamSelectionPanel extends JPanel implements ActionListener {
     private JButton thunderSelect;
     private HoopDuels window;
     private Team selected;
-
+    /**
+     * Constructs team selection panel based off HoopDuels window and the name
+     * @param w the window 
+     * @param name the name
+     */
     public TeamSelectionPanel(HoopDuels w, String name) {
         window = w;
         teams = new HashMap<String, Team>();
@@ -45,21 +49,36 @@ public class TeamSelectionPanel extends JPanel implements ActionListener {
         buttons.add(thunderSelect);
         add(buttons, BorderLayout.CENTER);
     }
+    /**
+     * utility method for creating the button
+     * @param text the text for button 
+     * @return the created button
+     */
     private JButton makeButton(String text) {
         JButton temp = new JButton(text);
         temp.setFont(new Font("Arial", Font.BOLD, 23));
         temp.addActionListener(this);
         return temp;
     }
+    /**
+     * builds the team by referencing PlayManager's getTeams()
+     */
     private void buildTeams() {
         Team[] all = PlayerManager.getTeams();
         for (Team t : all) {
             teams.put(t.getTeamName(), t);
         }
     }
+    /**
+     * 
+     * @return the selected players
+     */
     public Team getselected() {
         return selected;
     }
+    /**
+     * on click for going to the next step which is the starting five.
+     */
     public void actionPerformed(ActionEvent e) {
         JButton temp = (JButton)e.getSource();
         String name = temp.getText();

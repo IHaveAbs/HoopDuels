@@ -30,9 +30,6 @@ public class PlayManager {
     }
 
     /**
-     * Sets player targets for a play. This is kept for compatibility with the spec.
-     */
-    /**
      * Sets up the the play
      * @param play the play
      * @param offense offensive team
@@ -63,13 +60,13 @@ public class PlayManager {
     }
 
     /**
-     * Positions all offensive players and moves the ball for one stage of the play.
-     * Mirrors coordinates if the offense is attacking left.
-     * @param play the play being run
+     * Sets the positions for all of the offensive players and moves the ball for a stage of the play.
+     * If we are attacking to the left we simply mirror the coordinates
+     * @param play the play
      * @param offense the offensive team
      * @param ball the ball
-     * @param attackingRight true if the offense attacks the right hoop
-     * @param stage the stage index to apply
+     * @param attackingRight whether we are attacking right
+     * @param stage the stage 
      */
     public void setupPlayStage(Play play, Team offense, Ball ball, boolean attackingRight, int stage) {
         ArrayList<Player> players = getPlayersByRoleOrder(offense);
@@ -88,11 +85,11 @@ public class PlayManager {
     }
 
     /**
-     * Assigns non-default move speeds to specific players based on the play and stage.
-     * Used to make screens, drives, and rolls look natural instead of every player moving at the same pace.
-     * @param play the play being run
-     * @param players the ordered list of players on the offensive team
-     * @param stage the current stage index
+     * Assigns the move speeds to players based off stage
+     * 
+     * @param play the play
+     * @param players the players
+     * @param stage the current stage
      */
     private void setSpecialSpeeds(Play play, ArrayList<Player> players, int stage) {
         Player pg = getByRoleList(players, "PG", 0);
@@ -101,8 +98,6 @@ public class PlayManager {
         Player pf = getByRoleList(players, "PF", 3);
         Player c = getByRoleList(players, "C", 4);
 
-        // Screens should not look like teleporting. The screener walks into position first,
-        // then the ball handler bursts around it.
         if (play.getName().equals("Pick and Roll")) {
             if (stage == 0) {
                 c.setMoveSpeed(Player.slowSpeed);
@@ -143,12 +138,12 @@ public class PlayManager {
     }
 
     /**
-     * Updates ball possession for the current stage of the play.
+     * Updates who is in possession of the ball depending on the current stage
      * Handles passes to the shooter at the appropriate stage for each play.
-     * @param play the play being run
+     * @param play the play
      * @param offense the offensive team
      * @param ball the ball
-     * @param stage the current stage index
+     * @param stage the current stage
      */
     private void moveBallForStage(Play play, Team offense, Ball ball, int stage) {
         Player pg = getBallHandler(offense);
@@ -158,7 +153,6 @@ public class PlayManager {
         Player shooter = chooseShooter(play, offense);
 
         if (play.getName().equals("Pick and Roll")) {
-            // PG runs the action, then hits the rolling center.
             if (stage < 2) {
                 ball.setHolder(pg);
             } else {
@@ -166,17 +160,13 @@ public class PlayManager {
             }
             return;
         }
-
         if (play.getName().equals("Isolation Drive")) {
-            // Isolation is a self-created bucket. The iso player should have the ball
-            // from the start so nobody gets a cheap assist.
+
             ball.setHolder(shooter);
             return;
         }
-
         if (play.getName().equals("Kick-Out Three")) {
-            // A wing drives and kicks to the shooting guard. This spreads assists
-            // around instead of giving every assist to the point guard.
+
             Player driver;
             if (sf != null) {
                 driver = sf;
@@ -190,9 +180,7 @@ public class PlayManager {
             }
             return;
         }
-
         if (play.getName().equals("Post Up")) {
-            // Entry pass comes from the wing/guard area, not always the point guard.
             Player entryPasser;
             if (sg != null) {
                 entryPasser = sg;
@@ -217,8 +205,9 @@ public class PlayManager {
     }
 
     /**
-     * Coordinates for one play phase. All coordinates assume the offense attacks the right hoop.
-     * Order: PG, SG, SF, PF, C.
+     * 
+     * The coordinates for each play depending on the stage.
+     * 
      * @param playName the name of the play
      * @param stage the stage index to fetch coordinates for
      * @return a 5x2 array of target coordinates for each player
@@ -226,55 +215,42 @@ public class PlayManager {
     private int[][] getTargetsForStage(String playName, int stage) {
         if (playName.equals("Pick and Roll")) {
             if (stage == 0) {
-                // Setup: guard waits at top, screener walks up, spacing goes to corners/wings.
                 return new int[][] {{260,350},{590,180},{610,515},{475,155},{335,350}};
             }
             if (stage == 1) {
-                // Screen: PG uses screen tight, center is planted, spacing stays wide.
                 return new int[][] {{430,310},{620,175},{630,520},{500,155},{335,350}};
             }
-            // Roll: center dives to rim, PG drifts to wing passing lane.
             return new int[][] {{470,250},{620,175},{630,520},{500,155},{665,350}};
         }
 
         if (playName.equals("Isolation Drive")) {
             if (stage == 0) {
-                // Clear out: the iso scorer gets the ball alone at the top/wing.
-                // Everyone else is spaced in corners and lifted slots so nobody stacks
-                // on top of the ball handler.
+
                 return new int[][] {{445,185},{645,180},{355,350},{445,515},{645,520}};
             }
             if (stage == 1) {
-                // First move: scorer attacks the middle while the other four stay wide.
                 return new int[][] {{445,185},{645,180},{535,350},{445,515},{645,520}};
             }
-            // Finish: scorer gets downhill to the rim.
             return new int[][] {{445,185},{645,180},{690,350},{445,515},{645,520}};
         }
 
         if (playName.equals("Kick-Out Three")) {
             if (stage == 0) {
-                // Spread floor: wing has the ball, shooter is spaced outside.
                 return new int[][] {{375,250},{670,175},{355,350},{455,520},{610,520}};
             }
             if (stage == 1) {
-                // Paint touch: wing drives into the lane so the defense collapses.
                 return new int[][] {{375,250},{670,175},{545,350},{455,520},{610,520}};
             }
-            // Kickout: ball is thrown back out to the shooter for a catch-and-shoot three.
             return new int[][] {{395,290},{680,175},{520,385},{455,520},{610,520}};
         }
 
         if (playName.equals("Post Up")) {
             if (stage == 0) {
-                // Seal: center walks to the block while the shooting guard gets an entry angle.
                 return new int[][] {{390,260},{545,245},{615,520},{455,500},{635,385}};
             }
             if (stage == 1) {
-                // Entry: wing/guard feeds the post, center seals closer to the rim.
                 return new int[][] {{405,270},{555,245},{625,520},{470,500},{665,370}};
             }
-            // Finish: post player turns middle/baseline toward rim.
             return new int[][] {{405,270},{555,245},{625,520},{470,500},{700,350}};
         }
 
@@ -282,47 +258,40 @@ public class PlayManager {
     }
 
     /**
-     * Mirrors an x coordinate to the left side of the court if the offense is attacking left.
-     * @param x the original x coordinate assuming attack right
-     * @param attackingRight true if the offense attacks the right hoop
-     * @return the adjusted x coordinate
+     * Mirrors the x coordinate if we are attacking left
+     * @param x original x position
+     * @param attackingRight whether we are attacking right
+     * @return final x coordinate
      */
     private int mirrorX(int x, boolean attackingRight) {
         if (attackingRight) {
             return x;
         }
-        return GamePanel.courtX + GamePanel.courtW - (x - GamePanel.courtX);
+        return GamePanel.courtX+GamePanel.courtW-(x-GamePanel.courtX);
     }
 
     /**
-     * Returns the designated shooter for the play.
-     * Falls back to the team's best shooter for the shot type if the position is not found.
-     * @param play the play being run
+     * Chooses the shooter for the play.
+     * @param play the play
      * @param offense the offensive team
      * @return the player who will take the shot
      */
     public Player chooseShooter(Play play, Team offense) {
         Player shooter = offense.getPlayerByPosition(play.getShooterPosition());
-        if (shooter == null) {
-            shooter = offense.getBestShooter(play.getShot());
-        }
         return shooter;
     }
 
     /**
      * Returns the shot type for the given play.
-     * @param play the play to check
-     * @return the shot type string, or "mid" if the play is null
+     * @param play the play 
+     * @return the shot type
      */
     public String getShot(Play play) {
-        if (play == null) {
-            return "mid";
-        }
         return play.getShot();
     }
 
     /**
-     * Returns the full list of available offensive plays.
+     * Returns the list of available plays.
      * @return the list of offensive plays
      */
     public ArrayList<Play> getAvailablePlays() {
@@ -331,9 +300,9 @@ public class PlayManager {
 
     /**
      * Finds a play by name and returns it.
-     * Returns the first play as a fallback if no match is found.
-     * @param name the name of the play to look up
-     * @return the matching play, or the first play if not found
+     * 
+     * @param name the name of the play 
+     * @return the play that matches
      */
     public Play getPlayByName(String name) {
         for (Play p : offensivePlays) {
@@ -346,26 +315,24 @@ public class PlayManager {
 
     /**
      * Returns the point guard of the team as the ball handler.
-     * Falls back to the first player in the starting five if no PG is found.
+     * 
      * @param team the team to get the ball handler from
-     * @return the ball handling player, or null if the team is empty
+     * @return the ball handling player(pg)
      */
     public Player getBallHandler(Team team) {
         Player pg = team.getPlayerByPosition("PG");
         if (pg != null) {
             return pg;
         }
-        if (team.getStartingFive().size() > 0) {
-            return team.getStartingFive().get(0);
-        }
+
         return null;
     }
 
     /**
-     * Returns the team's players ordered by role: PG, SG, SF, PF, C.
-     * Any players not matched by position are appended at the end.
-     * @param team the team to order
-     * @return the ordered list of players
+     * Returns the team's players by role
+     * 
+     * @param team the team 
+     * @return the list of players
      */
     private ArrayList<Player> getPlayersByRoleOrder(Team team) {
         ArrayList<Player> result = new ArrayList<Player>();
@@ -383,7 +350,7 @@ public class PlayManager {
     }
 
     /**
-     * Adds a player to the list only if they are not already in it.
+     * Adds a player to the list if they are not already in it.
      * @param list the list to add to
      * @param player the player to add
      */
@@ -394,10 +361,9 @@ public class PlayManager {
     }
 
     /**
-     * Finds a player in the list by position string.
-     * Falls back to the player at the default index if no position match is found.
-     * @param players the ordered list of players to search
-     * @param position the position string to match
+     * Finds a player in the list
+     * @param players the list of players to search
+     * @param position the position to match
      * @param defaultplayer the fallback index if no match is found
      * @return the matched player, or a fallback, or null if the list is empty
      */

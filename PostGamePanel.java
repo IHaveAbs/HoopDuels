@@ -12,7 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 /**
- * Displays final score and player statistics after the game ends.
+ * Game Panel for when the game ends
  */
 public class PostGamePanel extends JPanel implements ActionListener {
     private Team userTeam;
@@ -20,7 +20,12 @@ public class PostGamePanel extends JPanel implements ActionListener {
     private JButton restartGame;
     private JButton exitButton;
     private HoopDuels window;
-
+    /**
+     * Constructs Post Game Panel using Hoopduel window, the user team, and the ai team
+     * @param w
+     * @param u
+     * @param a
+     */
     public PostGamePanel(HoopDuels w, Team u, Team a) {
         window = w;
         userTeam = u;
@@ -31,6 +36,9 @@ public class PostGamePanel extends JPanel implements ActionListener {
 
         displayResults();
     }
+    /**
+     * displays the results after the game.
+     */
     public void displayResults() {
         String winner;
         if (userTeam.getScore() > aiTeam.getScore()) {
@@ -77,10 +85,19 @@ public class PostGamePanel extends JPanel implements ActionListener {
         buttons.add(exitButton);
         add(buttons, BorderLayout.SOUTH);
     }
+    /**
+     * 
+     * @param team the team
+     * @param p the player
+     * @return the player's data
+     */
     private Object[] playerData(Team team, Player p) {
         Object[] temp = new Object[] {team.getTeamName(), p.getName(), p.getPoints(), p.getRebounds(), p.getAssists(), p.getFieldGoalsMade() + "/" + p.getFieldGoalsAttempted()};
         return temp;
     }
+    /**
+     * Onclick for whether the user wants to restart or exit out of the game.
+     */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == restartGame) {
             window.restartFromTeamSelection();
