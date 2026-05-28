@@ -1,60 +1,75 @@
 import java.util.ArrayList;
 
 /**
- * Creates and manages offensive plays.
- * It sets target coordinates for players and chooses the shooter.
+ * Play manager class that manages the players.
+ * Uses a two dimensional array with the target position(x,y) of all of the players
  */
 public class PlayManager {
     private ArrayList<Play> offensivePlays;
 
+    /**
+     * Constructs play manager
+     * Creates a new arraylist for offensive plays
+     * Then calls buildPlays()
+     */
     public PlayManager() {
         offensivePlays = new ArrayList<Play>();
         buildPlays();
     }
 
+    /**
+     * These are the coordinates for each play.
+     * This is for offensive team attacking right(So user's play)
+     * Animation class later uses this to update the player's position based off target position
+     */
     private void buildPlays() {
-        // Final coordinates are written for a team attacking the right hoop.
-        // GamePanel uses the phase methods below for the actual animation.
-        offensivePlays.add(new Play("Pick and Roll", "rim", new int[][] {
-            {430, 315}, {590, 185}, {620, 500}, {500, 150}, {665, 350}
-        }, "C"));
-
-        offensivePlays.add(new Play("Isolation Drive", "rim", new int[][] {
-            {675, 350}, {620, 150}, {620, 520}, {430, 155}, {430, 520}
-        }, "SF"));
-
-        offensivePlays.add(new Play("Kick-Out Three", "three", new int[][] {
-            {520, 350}, {670, 175}, {630, 520}, {430, 165}, {430, 520}
-        }, "SG"));
-
-        offensivePlays.add(new Play("Post Up", "rim", new int[][] {
-            {430, 270}, {615, 155}, {615, 520}, {475, 500}, {675, 365}
-        }, "C"));
+        offensivePlays.add(new Play("Pick and Roll", "rim", new int[][] {{430, 315}, {590, 185}, {620, 500}, {500, 150}, {665, 350}}, "C"));
+        offensivePlays.add(new Play("Isolation Drive", "rim", new int[][] {{675, 350}, {620, 150}, {620, 520}, {430, 155}, {430, 520}}, "SF"));
+        offensivePlays.add(new Play("Kick-Out Three", "three", new int[][] {{520, 350}, {670, 175}, {630, 520}, {430, 165}, {430, 520}}, "SG"));
+        offensivePlays.add(new Play("Post Up", "rim", new int[][] {{430, 270}, {615, 155}, {615, 520}, {475, 500}, {675, 365}}, "C"));
     }
 
     /**
      * Sets player targets for a play. This is kept for compatibility with the spec.
+     */
+    /**
+     * Sets up the the play
+     * @param play the play
+     * @param offense offensive team
+     * @param ball the ball
      */
     public void setupPlay(Play play, Team offense, Ball ball) {
         setupPlay(play, offense, ball, true);
     }
 
     /**
-     * Sets player targets and ball holder for a play. This is the older one-stage version.
+     * Sets up the play by calling setupPlayStage
+     * @param play the play
+     * @param offense offensive team
+     * @param ball the ball
+     * @param attackingRight if the team is attacking right
      */
     public void setupPlay(Play play, Team offense, Ball ball, boolean attackingRight) {
         setupPlayStage(play, offense, ball, attackingRight, getStageCount(play) - 1);
     }
 
     /**
-     * Returns how many animation stages this play uses.
+     * We were originally thinking of varying our stage count but we didn't have enough time so we just ended up choosing three.
+     * @param play the play
+     * @return how many animation stages the play uses
      */
     public int getStageCount(Play play) {
         return 3;
     }
 
     /**
-     * Applies one phase of the play. Targets are in role order: PG, SG, SF, PF, C.
+     * Positions all offensive players and moves the ball for one stage of the play.
+     * Mirrors coordinates if the offense is attacking left.
+     * @param play the play being run
+     * @param offense the offensive team
+     * @param ball the ball
+     * @param attackingRight true if the offense attacks the right hoop
+     * @param stage the stage index to apply
      */
     public void setupPlayStage(Play play, Team offense, Ball ball, boolean attackingRight, int stage) {
         ArrayList<Player> players = getPlayersByRoleOrder(offense);
@@ -72,6 +87,13 @@ public class PlayManager {
         moveBallForStage(play, offense, ball, stage);
     }
 
+    /**
+     * Assigns non-default move speeds to specific players based on the play and stage.
+     * Used to make screens, drives, and rolls look natural instead of every player moving at the same pace.
+     * @param play the play being run
+     * @param players the ordered list of players on the offensive team
+     * @param stage the current stage index
+     */
     private void setSpecialSpeeds(Play play, ArrayList<Player> players, int stage) {
         Player pg = getByRoleList(players, "PG", 0);
         Player sg = getByRoleList(players, "SG", 1);
@@ -120,6 +142,14 @@ public class PlayManager {
         }
     }
 
+    /**
+     * Updates ball possession for the current stage of the play.
+     * Handles passes to the shooter at the appropriate stage for each play.
+     * @param play the play being run
+     * @param offense the offensive team
+     * @param ball the ball
+     * @param stage the current stage index
+     */
     private void moveBallForStage(Play play, Team offense, Ball ball, int stage) {
         Player pg = getBallHandler(offense);
         Player sg = offense.getPlayerByPosition("SG");
@@ -189,6 +219,9 @@ public class PlayManager {
     /**
      * Coordinates for one play phase. All coordinates assume the offense attacks the right hoop.
      * Order: PG, SG, SF, PF, C.
+     * @param playName the name of the play
+     * @param stage the stage index to fetch coordinates for
+     * @return a 5x2 array of target coordinates for each player
      */
     private int[][] getTargetsForStage(String playName, int stage) {
         if (playName.equals("Pick and Roll")) {
@@ -248,6 +281,12 @@ public class PlayManager {
         return new int[][] {{300,350},{610,160},{610,520},{450,160},{450,520}};
     }
 
+    /**
+     * Mirrors an x coordinate to the left side of the court if the offense is attacking left.
+     * @param x the original x coordinate assuming attack right
+     * @param attackingRight true if the offense attacks the right hoop
+     * @return the adjusted x coordinate
+     */
     private int mirrorX(int x, boolean attackingRight) {
         if (attackingRight) {
             return x;
@@ -255,6 +294,13 @@ public class PlayManager {
         return GamePanel.courtX + GamePanel.courtW - (x - GamePanel.courtX);
     }
 
+    /**
+     * Returns the designated shooter for the play.
+     * Falls back to the team's best shooter for the shot type if the position is not found.
+     * @param play the play being run
+     * @param offense the offensive team
+     * @return the player who will take the shot
+     */
     public Player chooseShooter(Play play, Team offense) {
         Player shooter = offense.getPlayerByPosition(play.getShooterPosition());
         if (shooter == null) {
@@ -263,6 +309,11 @@ public class PlayManager {
         return shooter;
     }
 
+    /**
+     * Returns the shot type for the given play.
+     * @param play the play to check
+     * @return the shot type string, or "mid" if the play is null
+     */
     public String getShot(Play play) {
         if (play == null) {
             return "mid";
@@ -270,10 +321,20 @@ public class PlayManager {
         return play.getShot();
     }
 
+    /**
+     * Returns the full list of available offensive plays.
+     * @return the list of offensive plays
+     */
     public ArrayList<Play> getAvailablePlays() {
         return offensivePlays;
     }
 
+    /**
+     * Finds a play by name and returns it.
+     * Returns the first play as a fallback if no match is found.
+     * @param name the name of the play to look up
+     * @return the matching play, or the first play if not found
+     */
     public Play getPlayByName(String name) {
         for (Play p : offensivePlays) {
             if (p.getName().equals(name)) {
@@ -283,6 +344,12 @@ public class PlayManager {
         return offensivePlays.get(0);
     }
 
+    /**
+     * Returns the point guard of the team as the ball handler.
+     * Falls back to the first player in the starting five if no PG is found.
+     * @param team the team to get the ball handler from
+     * @return the ball handling player, or null if the team is empty
+     */
     public Player getBallHandler(Team team) {
         Player pg = team.getPlayerByPosition("PG");
         if (pg != null) {
@@ -294,6 +361,12 @@ public class PlayManager {
         return null;
     }
 
+    /**
+     * Returns the team's players ordered by role: PG, SG, SF, PF, C.
+     * Any players not matched by position are appended at the end.
+     * @param team the team to order
+     * @return the ordered list of players
+     */
     private ArrayList<Player> getPlayersByRoleOrder(Team team) {
         ArrayList<Player> result = new ArrayList<Player>();
         addUnique(result, team.getPlayerByPosition("PG"));
@@ -309,11 +382,25 @@ public class PlayManager {
         return result;
     }
 
+    /**
+     * Adds a player to the list only if they are not already in it.
+     * @param list the list to add to
+     * @param player the player to add
+     */
     private void addUnique(ArrayList<Player> list, Player player) {
         if (player != null && !list.contains(player)) {
             list.add(player);
         }
     }
+
+    /**
+     * Finds a player in the list by position string.
+     * Falls back to the player at the default index if no position match is found.
+     * @param players the ordered list of players to search
+     * @param position the position string to match
+     * @param defaultplayer the fallback index if no match is found
+     * @return the matched player, or a fallback, or null if the list is empty
+     */
     private Player getByRoleList(ArrayList<Player> players, String position, int defaultplayer) {
         for (Player p : players) {
             if (p.getPosition().equals(position)) {

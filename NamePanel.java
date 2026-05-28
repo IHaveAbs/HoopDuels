@@ -13,13 +13,20 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * First screen. Asks the user for their name.
+ * This is the first screen and it asks the user for the name
  */
 public class NamePanel extends JPanel implements ActionListener {
     private JTextField nameField;
     private JButton continueButton;
     private HoopDuels window;
 
+    /**
+     * Constructs NamePanel with HoopDuel window
+     * 
+     * Asks the user to enter their name and creates a text field for them to enter their name
+     * Sets up the continue button
+     * @param window HoopDuels window
+     */
     public NamePanel(HoopDuels window) {
         this.window = window;
         setLayout(new BorderLayout());
@@ -56,15 +63,18 @@ public class NamePanel extends JPanel implements ActionListener {
 
         add(center, BorderLayout.CENTER);
     }
+    /**
+     * 
+     * @return the username
+     */
     public String getUserName() {
         return nameField.getText().trim();
     }
+    /**
+     * Onclick method for if the user enters their name
+     */
     public void actionPerformed(ActionEvent e) {
         String name = getUserName();
-        if (name.length() == 0) {
-            JOptionPane.showMessageDialog(this, "Please enter your name first.");
-            return;
-        }
         window.setUsername(name);
         window.showMenuPanel();
     }

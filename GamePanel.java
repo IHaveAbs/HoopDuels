@@ -8,7 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 /**
- * Main gameplay panel. Draws the court and runs the turn-based possession loop.
+ * Main gameplay panel.
+ * Connects the logic of the game with the rest of the classes
  */
 public class GamePanel extends JPanel implements ActionListener {
     public static int courtX = 30;
@@ -20,9 +21,10 @@ public class GamePanel extends JPanel implements ActionListener {
     private int leftHoopX = courtX + 35;
     private int hoopY = courtY + courtH / 2;
 
-    // 720 seconds = one 12-minute quarter. We decrease by 6 each real second for demo speed.
+    // One game is 12 minutes we made the timer decrement by 6 seconds to make it go by quicker
     private int startTime = 720;
     private int clockDecrement = 6;
+    //frame delay is 16 ms so fps is 62.5 or about 60fps
     private int frameDelay = 16;
     private int pauseTimeInFrames = 70;
 
@@ -52,9 +54,18 @@ public class GamePanel extends JPanel implements ActionListener {
     private Animation animation;
     private Court court;
     private Button buttons;
-
     private ArrayList<Player> allCourtPlayers;
 
+    /**
+     * Constructs the Game Panel using the window, the username, the user's team and the ai's team.
+     * Creates all of the instances for the object
+     * Sets up the field and the buttons
+     * Lastly it also sets up the Timer and PlayLog
+     * @param window the window
+     * @param userName username the player entered
+     * @param userTeam the team of user
+     * @param aiTeam the team of ai
+     */
     public GamePanel(HoopDuels window, String userName, Team userTeam, Team aiTeam) {
         this.window = window;
         this.userTeam = userTeam;
@@ -97,7 +108,9 @@ public class GamePanel extends JPanel implements ActionListener {
         playLog.addMessage("Welcome, " + userName + "!");
         playLog.addMessage("Choose your first play.");
     }
-
+    /**
+     * Puts all the players in their starting positions
+     */
     private void setupInitialPositions() {
         int[][] userPositions = getUserBasePositions();
         int[][] aiPositions = getAIBasePositions();
@@ -118,34 +131,43 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     /**
-     * User offense always starts on the left and attacks the right hoop.
-     * When the AI has the ball, the user should sprint back to this left side to defend.
+     * 
+     * @return a two dimensional array of the user's 5 player's positions (x, y)
      */
     private int[][] getUserBasePositions() {
         return new int[][] {{190,350},{300,185},{300,515},{230,255},{230,445}};
     }
 
     /**
-     * AI starts on the right side. On AI possessions it attacks left; on user possessions it defends right.
+     * 
+     * @return a two dimensional array of the AI's 5 player's positions (x, y)
      */
     private int[][] getAIBasePositions() {
         return new int[][] {{610,350},{500,185},{500,515},{570,255},{570,445}};
     }
 
+    /**
+     * This transitions the offense to AI after the user makes their play
+     */
     private void transitionToAIOffense() {
-        // This fixes the old issue: the user team must sprint back to the left side
-        // because the AI attacks the left hoop after the user's possession ends.
         setTargetsFromArray(userTeam, getUserBasePositions(), Player.fastSpeed);
         setTargetsFromArray(aiTeam, getAIBasePositions(), Player.fastSpeed);
         ball.setHolder(playManager.getBallHandler(aiTeam));
     }
-
+    /**
+     * Returns both teams to normal position for user offense.
+     */
     private void setTargetsForUserOffense() {
         setTargetsFromArray(userTeam, getUserBasePositions(), Player.fastSpeed);
         setTargetsFromArray(aiTeam, getAIBasePositions(), Player.fastSpeed);
         ball.setHolder(playManager.getBallHandler(userTeam));
     }
-
+    /**
+     * Sets the targets for all the players on the team
+     * @param team the team
+     * @param targets target positions
+     * @param speed speed to move
+     */
     private void setTargetsFromArray(Team team, int[][] targets, int speed) {
         ArrayList<Player> players = team.getStartingFive();
         for (int i = 0; i < players.size() && i < targets.length; i++) {
@@ -154,7 +176,10 @@ public class GamePanel extends JPanel implements ActionListener {
             p.setMoveSpeed(speed);
         }
     }
-
+    /**
+     * Draws the court, players, ball, scoreboard, playlog, sidepanels and result message.
+     * @param g swing graphics
+     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         court.drawCourt(g);
@@ -165,7 +190,10 @@ public class GamePanel extends JPanel implements ActionListener {
         drawSidePanelText(g);
         drawResultMessage(g);
     }
-
+    /**
+     * Draws the side panel text
+     * @param g swing graphics
+     */
     private void drawSidePanelText(Graphics g) {
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 16));
@@ -185,7 +213,10 @@ public class GamePanel extends JPanel implements ActionListener {
             g.drawString("Simulation Running", 815, 75);
         }
     }
-
+    /**
+     * Draws the result message
+     * @param g swing graphics
+     */
     private void drawResultMessage(Graphics g) {
         if (resultMessage != null && resultMessage.length() > 0) {
             g.setColor(new Color(255, 255, 255, 210));
@@ -195,12 +226,21 @@ public class GamePanel extends JPanel implements ActionListener {
             g.drawString(resultMessage, 210, 64);
         }
     }
-
+    /**
+     * Updates the game for every frame
+     * Call updateGame() which essentially updates the positions of everything.
+     * Calls repaint() afterwards to make all of the changes show up.
+     */
     public void actionPerformed(ActionEvent e) {
         updateGame();
         repaint();
     }
-
+    /**
+     * Updates the game for every frame.
+     * Updates the clock and moves the players and ball
+     * Checks the state of the game for if its ai's transition, user's transition and if game is still animating
+     * Checks if game is over
+     */
     public void updateGame() {
         updateClock();
         animation.moveOnce();
@@ -240,7 +280,9 @@ public class GamePanel extends JPanel implements ActionListener {
 
         checkGameOver();
     }
-
+    /**
+     * updates the clock based off frameDelay(16ms)
+     */
     private void updateClock() {
         if (stateOfGame.equals("gameover") || overtime) {
             return;
@@ -255,19 +297,21 @@ public class GamePanel extends JPanel implements ActionListener {
             scoreboard.setTimeLeft(timeLeft);
         }
     }
-
+    /**
+     * Draws all the players
+     * @param g swing graphics
+     */
     public void drawPlayers(Graphics g) {
         for (Player p : allCourtPlayers) {
             p.draw(g);
         }
     }
-
+    /**
+     * Looks for the play then runs the play for user
+     * @param playName 
+     */
     public void runUserPossession(String playName) {
         Play play = playManager.getPlayByName(playName);
-        runUserPossession(play);
-    }
-
-    private void runUserPossession(Play play) {
         if (!stateOfGame.equals("waitingforuser")) {
             return;
         }
@@ -285,7 +329,10 @@ public class GamePanel extends JPanel implements ActionListener {
         playLog.addMessage(userTeam.getTeamName() + ": " + play.getName());
         applyCurrentPlayStage();
     }
-
+    /**
+     * Looks for the play then runs the play for AI
+     * @param defenseName
+     */
     public void runAIPossession(String defenseName) {
         if (!stateOfGame.equals("waitingfordefense")) {
             return;
@@ -306,7 +353,10 @@ public class GamePanel extends JPanel implements ActionListener {
         playLog.addMessage("Defense: " + defenseName);
         transitionToAIOffense();
     }
-
+    /**
+     * Begins the play animation
+     * @param userOnOffense whether or not user is on offense
+     */
     private void beginPlayAnimation(boolean userOnOffense) {
         userTurn = userOnOffense;
         if (userTurn) {
@@ -321,7 +371,11 @@ public class GamePanel extends JPanel implements ActionListener {
         resultPause = 0;
         applyCurrentPlayStage();
     }
-
+    /**
+     * Depending on the state of the game, we set up the players into the right positions for the play
+     * 
+     * We then update the resulting message
+     */
     private void applyCurrentPlayStage() {
         Team offense;
         if (userTurn) {
@@ -340,16 +394,20 @@ public class GamePanel extends JPanel implements ActionListener {
         playManager.setupPlayStage(activePlay, offense, ball, attackingRight, currentPlayStage);
 
         if (userTurn) {
-            // The AI plays mostly man-to-man against the user's play so the defenders actually guard.
             setDefensiveTargets(defense, offense, attackingRight, "Man-to-Man", currentPlayStage);
         } else {
-            // The user's chosen defense now moves to the correct side of the court and shows the scheme.
             setDefensiveTargets(defense, offense, attackingRight, activeDefense, currentPlayStage);
         }
 
         resultMessage = getStageMessage(activePlay, currentPlayStage, userTurn);
     }
-
+    /**
+     * Kind of like an announcer that announces what is going on in the game
+     * @param play the play being ran
+     * @param stage the index of the stage
+     * @param userOnOffense whether the user is on offense
+     * @return the message for what is going on
+     */
     private String getStageMessage(Play play, int stage, boolean userOnOffense) {
         Team offense;
         if (userOnOffense) {
@@ -367,7 +425,6 @@ public class GamePanel extends JPanel implements ActionListener {
         Player pg = offense.getStartingFive().get(0);
         Player sg = offense.getStartingFive().get(1);
         Player sf = offense.getStartingFive().get(2);
-        Player pf = offense.getStartingFive().get(3);
         Player c = offense.getStartingFive().get(4);
 
         if (play.getName().equals("Pick and Roll")) {
@@ -379,7 +436,6 @@ public class GamePanel extends JPanel implements ActionListener {
             }
             return c.getName() + " rolls to the rim for the pass";
         }
-
         if (play.getName().equals("Isolation Drive")) {
             if (stage == 0) {
                 return teamName + " clears out for " + sf.getName();
@@ -409,23 +465,32 @@ public class GamePanel extends JPanel implements ActionListener {
             }
             return c.getName() + " turns toward the rim to score";
         }
-
         return teamName + ": " + play.getName();
     }
 
     /**
-     * Moves the defensive team to realistic targets based on the offense and the chosen scheme.
-     * Even in zone/paint/perimeter defenses, the defenders still react to the AI players' cuts,
-     * passes, and rolls instead of standing still in one spot.
+     * Moves the defensive team to guard the offensive team making plays
+     * @param defense defensive team
+     * @param offense offensive team
+     * @param offenseAttackingRight if the offensive team is going right
+     * @param modifier the defense modifier
+     * @param stage the stage of the game.
      */
-    private void setDefensiveTargets(Team defense, Team offense, boolean offenseAttackingRight, String scheme, int stage) {
-        if (scheme == null || scheme.equals("Man-to-Man")) {
+    private void setDefensiveTargets(Team defense, Team offense, boolean offenseAttackingRight, String modifier, int stage) {
+        if (modifier.equals("Man-to-Man")) {
             setManDefense(defense, offense, offenseAttackingRight);
             return;
         }
-        setSchemeDefense(defense, offense, offenseAttackingRight, scheme, stage);
+        setModifierDefense(defense, offense, offenseAttackingRight, modifier, stage);
     }
-
+    /**
+     * In basketball, a player usually has an assinged player that they have to guard.
+     * This class uses the offset to make the defensive team set up each of the players to guard someone in the opposing team.
+     * 
+     * @param defense defensive team
+     * @param offense offensive team
+     * @param offenseAttackingRight whether the offense is attacking to the right.
+     */ 
     private void setManDefense(Team defense, Team offense, boolean offenseAttackingRight) {
         ArrayList<Player> defenders = defense.getStartingFive();
         ArrayList<Player> offensivePlayers = offense.getStartingFive();
@@ -447,10 +512,21 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     /**
-     * Scheme defense is not just five fixed dots. The defenders match the AI movement,
-     * but their positions are adjusted based on the chosen scheme.
+     * Modifier defense is not just five fixed dots. The defenders match the AI movement,
+     * but their positions are adjusted based on the chosen modifier.
      */
-    private void setSchemeDefense(Team defense, Team offense, boolean offenseAttackingRight, String scheme, int stage) {
+    /**
+     * Setups the defense for the user based off the modifier they chose.
+     * Similar to setManDefense where the user's players will try to guard an assigned player 
+     * but is slightly different based off modifier
+     * 
+     * @param defense defensive team
+     * @param offense offensive team
+     * @param offenseAttackingRight whether the offense is attacking right
+     * @param modifier defense modifier
+     * @param stage the stage of the game
+     */
+    private void setModifierDefense(Team defense, Team offense, boolean offenseAttackingRight, String modifier, int stage) {
         ArrayList<Player> defenders = defense.getStartingFive();
         ArrayList<Player> offensivePlayers = offense.getStartingFive();
         int speed;
@@ -460,10 +536,7 @@ public class GamePanel extends JPanel implements ActionListener {
             speed = Player.normalSpeed;
         }
 
-        if (scheme.equals("Zone Defense")) {
-            // A 2-3 zone should look like two guards up top and three players across
-            // the back line. It should not look like five random man-to-man matchups.
-            // When the offense drives/post-ups, the zone collapses toward the key.
+        if (modifier.equals("Zone Defense")) {
             int[][] zoneTargets = getTwoThreeZoneTargets(offenseAttackingRight, stage);
             for (int i = 0; i < defenders.size() && i < zoneTargets.length; i++) {
                 Player defender = defenders.get(i);
@@ -489,8 +562,7 @@ public class GamePanel extends JPanel implements ActionListener {
             int targetX = attackerX + betweenOffset;
             int targetY = attackerY;
 
-            if (scheme.equals("Protect Paint")) {
-                // Paint defense sends help toward the rim, so it follows cutters but collapses inside.
+            if (modifier.equals("Protect Paint")) {
                 int paintX;
                 if (offenseAttackingRight) {
                     paintX = courtX + courtW - 115;
@@ -499,8 +571,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 }
                 targetX = (targetX + paintX) / 2;
                 targetY = (targetY + hoopY) / 2;
-            } else if (scheme.equals("Guard Perimeter")) {
-                // Perimeter defense chases shooters tighter and stays higher/wider.
+            } else if (modifier.equals("Guard Perimeter")) {
                 int perimeterOffset;
                 if (offenseAttackingRight) {
                     perimeterOffset = 28;
@@ -514,16 +585,19 @@ public class GamePanel extends JPanel implements ActionListener {
                     targetY = attackerY + 18;
                 }
             }
-
             defender.setTarget(clampX(targetX), clampY(targetY));
             defender.setMoveSpeed(speed);
         }
     }
 
     /**
-     * Returns clean 2-3 zone spots. The first two defenders form the top line,
-     * and the last three form the back line. For rim attacks, the whole zone
-     * shrinks toward the paint to make it look harder to get the ball inside.
+     * Sets up the two three zone, and when offense try to get into the paint
+     * The defense will collapse making it harder to score
+     * The two three zone is where two defender are on top and three defenders at the bottom
+     * 
+     * @param offenseAttackingRight whether the offense is attacking the right
+     * @param stage stage of the game
+     * @return a two dimensional array of size 5 of the target positions(x,y) for the zone defenders
      */
     private int[][] getTwoThreeZoneTargets(boolean offenseAttackingRight, int stage) {
         boolean collapse = false;
@@ -533,23 +607,11 @@ public class GamePanel extends JPanel implements ActionListener {
         int[][] rightSide;
 
         if (collapse) {
-            // Two up top, three collapsed around the lane/key.
-            rightSide = new int[][] {
-                {560, 305}, {560, 395},
-                {655, 285}, {670, 350}, {655, 415}
-            };
+            rightSide = new int[][] {{560, 305}, {560, 395}, {655, 285}, {670, 350}, {655, 415}};
         } else if (stage >= 1 && activePlay != null && activePlay.getName().equals("Kick-Out Three")) {
-            // Start collapsed from the drive, but begin recovering outward late.
-            rightSide = new int[][] {
-                {535, 275}, {535, 425},
-                {640, 225}, {675, 350}, {640, 475}
-            };
+            rightSide = new int[][] {{535, 275}, {535, 425}, {640, 225}, {675, 350}, {640, 475}};
         } else {
-            // Standard 2-3 shape: two guards near the elbows/top, three across the baseline.
-            rightSide = new int[][] {
-                {545, 275}, {545, 425},
-                {675, 230}, {690, 350}, {675, 470}
-            };
+            rightSide = new int[][] {{545, 275}, {545, 425},{675, 230}, {690, 350}, {675, 470}};
         }
 
         if (offenseAttackingRight) {
@@ -563,15 +625,27 @@ public class GamePanel extends JPanel implements ActionListener {
         }
         return mirrored;
     }
-
+    /**
+     * makes sure the players are in bounds
+     * @param x
+     * @return the x coordiante so that it is in bounds
+     */
     private int clampX(int x) {
         return Math.max(courtX + 35, Math.min(courtX + courtW - 35, x));
     }
-
+    /**
+     * makes sure the players are in bounds
+     * @param y
+     * @return the y coordiante so that it is in bounds
+     */
     private int clampY(int y) {
         return Math.max(courtY + 35, Math.min(courtY + courtH - 35, y));
     }
-
+    /**
+     * This method is for the shot at the end of the play
+     * The ball can either make where it awards the points and puts the ball at the rim or
+     * The ball can miss where we show that the ball misses
+     */
     private void finishShotAnimation() {
         int modifier = 0;
         Team scoringTeam;
@@ -584,8 +658,6 @@ public class GamePanel extends JPanel implements ActionListener {
             modifier = defenseManager.getShotModifier(activeShotType);
         }
 
-        // Use the player who actually has the ball at the end of the animation.
-        // This fixes the old bug where the log could say the passer scored.
         Player ballHolder = ball.getHolder();
         if (ballHolder != null) {
             activeShooter = ballHolder;
@@ -616,7 +688,6 @@ public class GamePanel extends JPanel implements ActionListener {
             resultMessage = activeShooter.getName() + " made a " + points + " pointer!";
             playLog.addMessage(activeShooter.getName() + " made " + points + " pts");
         } else {
-            // Miss animation bounces the ball near the rim.
             int missHoop;
             if (userTurn) {
                 missHoop = rightHoopX;
@@ -641,7 +712,12 @@ public class GamePanel extends JPanel implements ActionListener {
         }
         ball.clearLastPasser();
     }
-
+    /**
+     * Chooses who gets the rebound if the shot is missed
+     * 70% chance that the team defending get rebound
+     * @param shootingTeam
+     * @return player who gets rebound
+     */
     private Player chooseRebounderAfterMiss(Team shootingTeam) {
         Team defendingTeam;
         if (shootingTeam == userTeam) {
@@ -657,7 +733,11 @@ public class GamePanel extends JPanel implements ActionListener {
         }
         return reboundTeam.getRandomPlayer();
     }
-
+    /**
+     * Moves the possession of the ball to the next team
+     * Checks for overtime
+     * Sets up the buttons as well
+     */
     private void finishPossessionAfterPause() {
         scoreboard.nextPossession();
 
@@ -665,6 +745,7 @@ public class GamePanel extends JPanel implements ActionListener {
             endGame();
             return;
         }
+
 
         if (userTurn) {
             stateOfGame = "waitingfordefense";
@@ -682,7 +763,10 @@ public class GamePanel extends JPanel implements ActionListener {
             setTargetsForUserOffense();
         }
     }
-
+    /**
+     * Checks whether the game is over by looking at the timeLeft and if the game went into overtime.
+     * 
+     */
     public void checkGameOver() {
         if (stateOfGame.equals("gameover")) {
             return;
@@ -697,7 +781,9 @@ public class GamePanel extends JPanel implements ActionListener {
             }
         }
     }
-
+    /**
+     * Ends the game by removing buttons, stopping timer and showing the post game panel of player stats during the game.
+     */
     private void endGame() {
         stateOfGame = "gameover";
         buttons.showPlayButtons(false);
@@ -705,6 +791,10 @@ public class GamePanel extends JPanel implements ActionListener {
         animTimer.stop();
         window.showPostGamePanel(userTeam, aiTeam);
     }
+    /**
+     * Checks if all the players are at target
+     * @return true/false if the players are all at target
+     */
     private boolean isAllPlayersAtTarget() {
         for (Player p : allCourtPlayers) {
             if (!p.isAtTarget()) {

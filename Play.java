@@ -1,6 +1,9 @@
 /**
  * This is the class for the individual plays in the game.
- * It has field variables for the name of the play, the type of shot, the target positions for the five players, and position of the shooter.
+ * It has field variables for the name of the play,
+ * the type of shot, 
+ * the target positions for the five players, 
+ * and position of the shooter.
  * It also has methods that returns each of these field variables
  */
 public class Play {
@@ -11,6 +14,7 @@ public class Play {
 
     /**
      * Constructor for Play
+     * Constructs Play using name of player, the shot type, the target positions, and the shooter's position
      * 
      * @param name
      * @param shotType
@@ -36,13 +40,6 @@ public class Play {
      */
     public String getShot() {
         return shotType;
-    }
-    /**
-     *  gets the target positions of players
-     * @return targetPositions
-     */
-    public int[][] getTargetPositions() {
-        return targetPositions;
     }
     /**
      * gets the positions of shooter

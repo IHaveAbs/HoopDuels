@@ -1,10 +1,14 @@
 import java.awt.Color;
 
 /**
- * Player data for all the teams.
- * Stats are not official live NBA stats.
+ * Player manager class that manages the player data
+ * Utility class
  */
 public class PlayerManager {
+    /**
+     * builds team for warriors
+     * @return warriors team
+     */
     public static Team buildWarriors() {
         Team t = new Team("Warriors");
         Color c = new Color(255, 210, 40);
@@ -21,6 +25,10 @@ public class PlayerManager {
         t.addPlayer(new Player("Seth Curry", "Warriors", "SG", 58, 50, 86, 65, c));
         return t;
     }
+    /**
+     * builds team for lakers
+     * @return lakers team
+     */
     public static Team buildLakers() {
         Team t = new Team("Lakers");
         Color c = new Color(185, 130, 255);
@@ -38,6 +46,10 @@ public class PlayerManager {
         t.addPlayer(new Player("Luke Kennard", "Lakers", "SG", 56, 50, 88, 64, c));
         return t;
     }
+    /**
+     * builds team for celtics
+     * @return celtics team
+     */
     public static Team buildCeltics() {
         Team t = new Team("Celtics");
         Color c = new Color(50, 190, 90);
@@ -54,6 +66,10 @@ public class PlayerManager {
         t.addPlayer(new Player("John Tonje", "Celtics", "SG", 64, 45, 78, 70, c));
         return t;
     }
+    /**
+     * builds team for thunder
+     * @return thunder team
+     */
     public static Team buildThunder() {
         Team t = new Team("Thunder");
         Color c = new Color(80, 170, 255);
@@ -71,9 +87,19 @@ public class PlayerManager {
         t.addPlayer(new Player("Jared McCain", "Thunder", "SG", 62, 48, 82, 68, c));
         return t;
     }
+    /**
+     * 
+     * @return gets all the teams
+     */
     public static Team[] getTeams() {
         return new Team[] { buildWarriors(), buildLakers(), buildCeltics(), buildThunder() };
     }
+    /**
+     * gets the default AI team (first team that is not same as user's team)
+     * makes sure its not same as users
+     * @param userTeamName user's team name
+     * @return AI's team
+     */
     public static Team getDefaultAITeam(String userTeamName) {
         Team[] teams = getTeams();
         for (Team t : teams) {

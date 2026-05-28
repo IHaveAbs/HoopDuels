@@ -7,21 +7,25 @@ import java.util.ArrayList;
  */
 public class PlayLog implements Drawable {
     private ArrayList<String> logs;
+    /**
+     * Constructs play log with a new arraylist for logs
+     */
     public PlayLog() {
         logs = new ArrayList<String>();
     }
+    /**
+     * adds a message to logs
+     * @param message the message
+     */
     public void addMessage(String message) {
         logs.add(message);
     }
-    public String getRecentMessage() {
-        if (logs.size() == 0) {
-            return "";
-        }
-        return logs.get(logs.size() - 1);
-    }
-    public ArrayList<String> getlogs() {
-        return logs;
-    }
+    /**
+     * Draws the play log
+     * 
+     * 
+     * @param g swing graphics
+     */
     public void draw(Graphics g) {
         int x = 813;
         int y = 283;

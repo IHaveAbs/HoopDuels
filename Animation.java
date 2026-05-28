@@ -26,17 +26,4 @@ public class Animation {
         }
         ball.moveTowardTarget();
     }
-    /**
-     * Checks if all the players have reached the target
-     * 
-     * @return true if all the players are at the target and false if they are not
-     */
-    public boolean isAllPlayersAtTarget() {
-        for (Player p : players) {
-            if (!p.isAtTarget()) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

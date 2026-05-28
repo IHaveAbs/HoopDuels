@@ -62,7 +62,7 @@ public class Ball implements Drawable {
      * Moves ball towards target based on ballspeed. 
      * @param current current pos
      * @param target target pos
-     * @return current
+     * @return the position
      */
     private int moveOneAxis(int current, int target) {
         if (current < target) {
