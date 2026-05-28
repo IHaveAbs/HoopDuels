@@ -1,7 +1,17 @@
 import java.awt.Color;
 import java.awt.Graphics;
 
+/**
+ * Court class for our game.
+ * Mainly used to draw the court.
+ * Utility class as well to decrease amount of code in GamePanel
+ */
 public class Court {
+    /**
+     * Draws the court
+     * Which lines of code draws what are written in the comments
+     * @param g Graphics
+     */
     public void drawCourt(Graphics g) {
         int courtX = GamePanel.courtX;
         int courtY = GamePanel.courtY;

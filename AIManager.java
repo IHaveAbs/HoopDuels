@@ -3,15 +3,20 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
- * This is the manager for the AI.
- * The AI works by having an arraylist of plays that it chooses from, but if its losing it will try to score more threes to win back more points.
+ * Represents the AI bot for our game.
+ * 
  */
 public class AIManager {
 
     private Team team;
     private Queue<Play> queue;
     private ArrayList<Play> playswhenlosing;
-
+    /**
+     * Constructs the AI for the game given the team and the plays it could make.
+     * Creates a queue for the starting plays.
+     * @param t the team
+     * @param plays the plays that could be made
+     */
     public AIManager(Team t, ArrayList<Play> plays) {
         team = t;
         playswhenlosing = new ArrayList<Play>(plays);
@@ -29,6 +34,15 @@ public class AIManager {
             }
         }
     }
+    /**
+     * The AI works by having an queue of plays that it chooses from.
+     * The AI would then start choosing plays randomly.
+     * If its losing and there is 3 minutes left it will try to score more threes to win back more points.
+     * @param ai_score ai's score
+     * @param user_score user's score
+     * @param timeleft time left in the game
+     * @return the play
+     */
     public Play choosePlay(int ai_score, int user_score, int timeleft) {
         if (!queue.isEmpty()) {
             return queue.poll();
@@ -47,6 +61,12 @@ public class AIManager {
         int randomplay = (int) (Math.random()*playswhenlosing.size());
         return playswhenlosing.get(randomplay);
     }
+    /**
+     * Chooses the shooter based off the play.
+     * @param t the team
+     * @param play the play
+     * @return the shooter
+     */
     public Player chooseShooter(Team t, Play play) {
         Player shooter = t.getPlayerByPosition(play.getShooterPosition());
         if (shooter == null) {
@@ -54,6 +74,10 @@ public class AIManager {
         }
         return shooter;
     }
+    /**
+     * 
+     * @return the team.
+     */
     public Team getTeam() {
         return team;
     }

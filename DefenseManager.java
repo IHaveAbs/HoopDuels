@@ -1,12 +1,17 @@
 import java.util.ArrayList;
 
 /**
+ * Defense manager class for managing the defensive modifiers.
  * Stores defensive strategies and returns shot modifiers for each strategy.
  */
 public class DefenseManager {
     private ArrayList<String> defensiveOptions;
     private String selectedDefense;
-
+    /**
+     * Constructs the DefenseManager.
+     * adds all the defensive options to defensiveOptions
+     * default is man to man
+     */
     public DefenseManager() {
         defensiveOptions = new ArrayList<String>();
         defensiveOptions.add("Man-to-Man");
@@ -15,14 +20,19 @@ public class DefenseManager {
         defensiveOptions.add("Guard Perimeter");
         selectedDefense = "Man-to-Man";
     }
+    /**
+     * sets the defense
+     * @param defenseName name of defense
+     */
     public void setDefense(String defenseName) {
         if (defensiveOptions.contains(defenseName)) {
             selectedDefense = defenseName;
         }
     }
     /**
-     * Returns a percentage-point modifier for the AI shot chance.
-     * Negative values make it harder for the AI to score.
+     * Gets the change in percentage of the shot after the modifier
+     * @param shotType the type of shot
+     * @return the change in percentage of the shot after the modifier
      */
     public int getShotModifier(String shotType) {
         if (selectedDefense.equals("Man-to-Man")) {
@@ -63,7 +73,10 @@ public class DefenseManager {
         }
         return 0;
     }
-
+    /**
+     * 
+     * @return all the defensive options
+     */
     public ArrayList<String> getDefensiveOptions() {
         return defensiveOptions;
     }

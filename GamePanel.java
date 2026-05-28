@@ -50,7 +50,6 @@ public class GamePanel extends JPanel implements ActionListener {
     private int currentPlayStage;
     private int totalPlayStages;
     private Animation animation;
-    private Game game;
     private Court court;
     private Button buttons;
 
@@ -73,7 +72,6 @@ public class GamePanel extends JPanel implements ActionListener {
         scoreboard = new ScoreBoard(userTeam, aiTeam, timeLeft);
         ball = new Ball(200, 250);
         allCourtPlayers = new ArrayList<Player>();
-        game = new Game();
         court = new Court();
         buttons = new Button();
 
@@ -283,7 +281,6 @@ public class GamePanel extends JPanel implements ActionListener {
         buttons.showPlayButtons(false);
         buttons.showDefenseButtons(false);
         stateOfGame = "useranimating";
-        game.setAnimationRunning(true);
         resultMessage = userTeam.getTeamName() + " set up " + play.getName();
         playLog.addMessage(userTeam.getTeamName() + ": " + play.getName());
         applyCurrentPlayStage();
@@ -305,7 +302,6 @@ public class GamePanel extends JPanel implements ActionListener {
         buttons.showDefenseButtons(false);
         buttons.showPlayButtons(false);
         stateOfGame = "aitransition";
-        game.setAnimationRunning(true);
         resultMessage = "Sprint back into " + defenseName + "!";
         playLog.addMessage("Defense: " + defenseName);
         transitionToAIOffense();
@@ -663,7 +659,6 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     private void finishPossessionAfterPause() {
-        game.setAnimationRunning(false);
         scoreboard.nextPossession();
 
         if (overtime && userTeam.getScore() != aiTeam.getScore()) {

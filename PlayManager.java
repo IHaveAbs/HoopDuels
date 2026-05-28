@@ -147,7 +147,12 @@ public class PlayManager {
         if (play.getName().equals("Kick-Out Three")) {
             // A wing drives and kicks to the shooting guard. This spreads assists
             // around instead of giving every assist to the point guard.
-            Player driver = sf != null ? sf : pg;
+            Player driver;
+            if (sf != null) {
+                driver = sf;
+            } else {
+                driver = pg;
+            }
             if (stage < 2) {
                 ball.setHolder(driver);
             } else {
@@ -158,11 +163,22 @@ public class PlayManager {
 
         if (play.getName().equals("Post Up")) {
             // Entry pass comes from the wing/guard area, not always the point guard.
-            Player entryPasser = sg != null ? sg : pg;
+            Player entryPasser;
+            if (sg != null) {
+                entryPasser = sg;
+            } else {
+                entryPasser = pg;
+            }
             if (stage == 0) {
                 ball.setHolder(entryPasser);
             } else {
-                ball.passTo(c != null ? c : shooter);
+                Player postTarget;
+                if (c != null) {
+                    postTarget = c;
+                } else {
+                    postTarget = shooter;
+                }
+                ball.passTo(postTarget);
             }
             return;
         }
