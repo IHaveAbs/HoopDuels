@@ -52,4 +52,4 @@ java HoopDuels
 
 ## What's next
 
-I have two ideas for what to add next. The first is a two-player mode, so two people can play against each other on the same keyboard. The second, which I want to do more, is to make the computer use real AI instead of the plays it follows now. I'm saving that one until I learn how to work with AI.
+I have two ideas for what to add next. The first is a two-player mode, so two people can play against each other on the same keyboard. The second, which I want to do more, is to make the computer use real AI instead of the plays it follows now.
